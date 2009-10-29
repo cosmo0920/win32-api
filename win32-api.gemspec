@@ -1,8 +1,8 @@
 require 'rubygems'
 
-spec = Gem::Specification.new do |gem|
+Gem::Specification.new do |gem|
    gem.name       = 'win32-api'
-   gem.version    = '1.4.5'
+   gem.version    = '1.5.0'
    gem.authors    = ['Daniel J. Berger', 'Park Heesob']
    gem.license    = 'Artistic 2.0'
    gem.email      = 'djberg96@gmail.com'
@@ -11,12 +11,11 @@ spec = Gem::Specification.new do |gem|
    gem.summary    = 'A superior replacement for Win32API'
    gem.has_rdoc   = true
    gem.test_files = Dir['test/test*']
-   gem.extensions = ['ext/extconf.rb']
-   gem.files      = Dir['**/*'].reject{ |f| f.include?('CVS') || f.include?('lib') }
+   gem.files      = Dir['**/*'].reject{ |f| f.include?('CVS') }
    
    gem.rubyforge_project = 'win32utils'
    gem.required_ruby_version = '>= 1.8.2'
-   gem.extra_rdoc_files = ['README', 'CHANGES', 'MANIFEST', 'ext/win32/api.c']
+   gem.extra_rdoc_files = ['README', 'CHANGES', 'MANIFEST']
    
    gem.add_development_dependency('test-unit', '>= 2.0.2')
    
@@ -27,5 +26,3 @@ spec = Gem::Specification.new do |gem|
       pointers, an additional string type, and more.
    EOF
 end
-
-Gem::Builder.new(spec).build
