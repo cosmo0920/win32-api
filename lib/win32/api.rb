@@ -39,7 +39,7 @@ module Win32
          'S' => :string,
          'P' => :pointer,
          'I' => :int,
-         'L' => :long,
+         'L' => :ulong,
          'B' => :int      # Added this to make it work with windows-api
       }
 
