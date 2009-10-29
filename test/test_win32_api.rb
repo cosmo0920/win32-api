@@ -92,6 +92,10 @@ class TC_Win32_API < Test::Unit::TestCase
    def test_constructor_expected_failures
       assert_raise(ArgumentError){ API.new }
       assert_raise(ArgumentError){ API.new('GetUserName', ('L' * 21), 'X') }
+   end
+
+   def test_constructor_expected_lib_load_failures
+      assert_raise(API::LoadLibraryError){ API.new('NoSuchFunction', 'PL', 'I') }
       assert_raise(API::LoadLibraryError){ API.new('GetUserName', 'PL', 'I', 'foo') }
       assert_raise(API::PrototypeError){ API.new('GetUserName', 'X', 'I', 'advapi32') }
       assert_raise(API::PrototypeError){ API.new('GetUserName', 'PL', 'X', 'advapi32') }
