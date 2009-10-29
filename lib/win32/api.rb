@@ -122,10 +122,11 @@ module Win32
                   API.map_prototype(proto),
                   API.find_return_type(rtype)
                )
-               attached = true
-               break
             rescue FFI::NotFoundError
                # Do nothing yet. Raise an error later if all attempts fail.
+            else
+               attached = true
+               break
             end
          }
 
