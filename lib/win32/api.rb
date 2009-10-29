@@ -35,6 +35,7 @@ module Win32
       SUFFIXES = ['', 'A', 'W']
 
       TypeDefs = {
+         'K' => :void, # Placeholder for now
          'V' => :void,
          'S' => :string,
          'P' => :pointer,
