@@ -43,18 +43,22 @@ module Win32
          'B' => :int      # Added this to make it work with windows-api
       }
 
+      # Given the prototype, return the underlying FFI data type.
       def self.find_prototype(name)
          TypeDefs.fetch(name){
             raise PrototypeError, "Illegal prototype '#{name}'"
          }
       end
 
+      # Given the return type, return the underlying FFI data type.
       def self.find_return_type(name)
          TypeDefs.fetch(name){
             raise PrototypeError, "Illegal return type '#{name}'"
          }
       end
 
+      # Takes an array of prototype strings and returns an array of the
+      # underlying FFI data types.
       def self.map_prototype(prototype)
          types = []
 
@@ -130,7 +134,7 @@ module Win32
             msg = "Unable to load function '#{func}', '#{func}A', or '#{func}W'"
          end
          
-         raise Error, msg if !attached
+         raise LoadLibraryError, msg if !attached
       end
    end
 end
