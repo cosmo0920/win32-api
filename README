@@ -47,8 +47,6 @@
      return type and DLL.
    * Removed the support for lower case prototype and return types. Always
      use capital letters.
-   * Resorts to wide character functions (where possible) when $KCODE is set
-     to UTF8.
    
 = Developer's Notes
    The current Win32API library that ships with the standard library has been
@@ -85,9 +83,6 @@
    warranties of merchantability and fitness for a particular purpose.
    
 = Known Issues
-   Possible callback issues when dealing with multi-threaded applications.
-   We are working on this for the next 1.2.x release.
-   
    Please submit any bug reports to the project page at
    http://www.rubyforge.org/projects/win32utils.
 
