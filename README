@@ -47,8 +47,6 @@
      return type and DLL.
    * Removed the support for lower case prototype and return types. Always
      use capital letters.
-   * Resorts to wide character functions (where possible) when $KCODE is set
-     to UTF8.
    
 = Developer's Notes
    The current Win32API library that ships with the standard library has been
@@ -77,7 +75,8 @@
 
 = Documentation
    The source file contains inline RDoc documentation. If you installed
-   this file as a gem, then you have the docs.
+   this file as a gem, then you have the docs. Run "gem server" and point
+   your browser at http://localhost:8808 to see them.
    
 = Warranty
    This package is provided "as is" and without any express or
