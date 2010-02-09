@@ -60,7 +60,7 @@ namespace 'gem' do
   end
 
   desc 'Build a binary gem'
-  task :binary => [:create] do
+  task :binary => [:build] do
     mkdir_p 'lib/win32'
     cp 'ext/api.so', 'lib/win32'
 
