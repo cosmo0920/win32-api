@@ -40,7 +40,7 @@ class TC_Win32_API_Callback < Test::Unit::TestCase
    def test_address
       assert_nothing_raised{ @callback = API::Callback.new('LP', 'I') }
       assert_respond_to(@callback, :address)
-      assert_kind_of(Fixnum, @callback.address)
+      assert_kind_of(Integer, @callback.address)
       assert_equal(true, @callback.address > 0)
    end
    
