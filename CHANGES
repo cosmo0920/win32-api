@@ -1,4 +1,4 @@
-== 1.4.6 - ???
+== 1.4.6 - 9-Feb-2010
 * Fixed a warning that showed up with MinGW/gcc caused by an unnecessary
   pointer dereference.
 * Some updates to the Rakefile and gemspec. Gem building is now handled via
