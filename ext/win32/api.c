@@ -529,81 +529,79 @@ typedef struct {
 } CALLPARAM;
 
 
-DWORD CallbackFunction(CALLPARAM param,VALUE callback)
+DWORD CallbackFunction(CALLPARAM param, VALUE callback)
 {
-    VALUE v_proto, v_return, v_proc, v_retval;
-    VALUE argv[20];
-    int i, argc;
-    char *a_proto;
-    char *a_return;
+  VALUE v_proto, v_return, v_proc, v_retval;
+  VALUE argv[20];
+  int i, argc;
+  char *a_proto;
+  char *a_return;
 
-    if(callback && !NIL_P(callback)){
-        v_proto = rb_iv_get(callback, "@prototype");
-        a_proto = RSTRING_PTR(v_proto);
+  if(callback && !NIL_P(callback)){
+    v_proto = rb_iv_get(callback, "@prototype");
+    a_proto = RSTRING_PTR(v_proto);
 
-        v_return = rb_iv_get(callback, "@return_type");
-        a_return = RSTRING_PTR(v_return);
+    v_return = rb_iv_get(callback, "@return_type");
+    a_return = RSTRING_PTR(v_return);
 
-        v_proc = rb_iv_get(callback, "@function");
-        argc = RSTRING_LEN(v_proto);
+    v_proc = rb_iv_get(callback, "@function");
+    argc = RSTRING_LEN(v_proto);
 
-        for(i=0; i < RSTRING_LEN(v_proto); i++){
-           argv[i] = Qnil;
-           switch(a_proto[i]){
-              case 'L':
-                 argv[i] = ULONG2NUM(param.params[i]);
-                 break;
-              case 'P':
-                 if(param.params[i])
-                    argv[i] = rb_str_new2((char *)param.params[i]);
-                 break;
-              case 'I':
-                 argv[i] = INT2NUM(param.params[i]);
-                 break;
-              default:
-                 rb_raise(cAPIProtoError, "Illegal prototype '%s'",
-                    RSTRING_PTR(a_proto[i])
-                 );
-            }
-        }
-
-        v_retval = rb_funcall2(v_proc, rb_intern("call"), argc, argv);
-
-        /* Handle true and false explicitly, as some CALLBACK functions
-         * require TRUE or FALSE to break out of loops, etc.
-         */
-        if(v_retval == Qtrue)
-           return TRUE;
-        else if(v_retval == Qfalse)
-           return FALSE;
-
-        switch (*a_return) {
-           case 'I':
-              return NUM2INT(v_retval);
-              break;
-           case 'L':
-              return NUM2ULONG(v_retval);
-              break;
-           case 'S':
-              return (unsigned long)RSTRING_PTR(v_retval);
-              break;
-           case 'P':
-              if(NIL_P(v_retval)){
-                 return 0;
-              }
-              else if(FIXNUM_P(v_retval)){
-                 return NUM2ULONG(v_retval);
-              }
-              else{
-                 StringValue(v_retval);
-                 rb_str_modify(v_retval);
-                 return (unsigned long)StringValuePtr(v_retval);
-              }
-              break;
-        }
+    for(i=0; i < RSTRING_LEN(v_proto); i++){
+      argv[i] = Qnil;
+      switch(a_proto[i]){
+        case 'L':
+          argv[i] = ULONG2NUM(param.params[i]);
+          break;
+        case 'P':
+          if(param.params[i])
+            argv[i] = rb_str_new2((char *)param.params[i]);
+          break;
+        case 'I':
+          argv[i] = INT2NUM(param.params[i]);
+          break;
+        default:
+          rb_raise(cAPIProtoError, "Illegal prototype '%s'", a_proto[i]);
+      }
     }
 
-    return 0;
+    v_retval = rb_funcall2(v_proc, rb_intern("call"), argc, argv);
+
+    /* Handle true and false explicitly, as some CALLBACK functions
+     * require TRUE or FALSE to break out of loops, etc.
+     */
+    if(v_retval == Qtrue)
+      return TRUE;
+    else if(v_retval == Qfalse)
+      return FALSE;
+
+    switch (*a_return) {
+      case 'I':
+        return NUM2INT(v_retval);
+        break;
+      case 'L':
+        return NUM2ULONG(v_retval);
+        break;
+      case 'S':
+        return (unsigned long)RSTRING_PTR(v_retval);
+        break;
+      case 'P':
+        if(NIL_P(v_retval)){
+          return 0;
+        }
+        else if(FIXNUM_P(v_retval)){
+          return NUM2ULONG(v_retval);
+        }
+        else{
+          StringValue(v_retval);
+          rb_str_modify(v_retval);
+          return (unsigned long)StringValuePtr(v_retval);
+        }
+        break;
+    }
+  }
+
+  return 0;
 }
 
 #define CALLBACK0(x) DWORD CALLBACK CallbackFunction0_##x() {\
