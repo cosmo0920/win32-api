@@ -35,13 +35,13 @@ module Win32
     SUFFIXES = ['', 'A', 'W']
 
     TypeDefs = {
-      'K' => :void, # Placeholder for now
-      'V' => :void,
-      'S' => :string,
-      'P' => :pointer,
-      'I' => :int,
-      'L' => :ulong,
-      'B' => :int   # Added this to make it work with windows-api
+      'K' => :void,     # Callback [This is a placeholder for now]
+      'V' => :void,     # Void
+      'S' => :string,   # String
+      'P' => :pointer,  # Pointer
+      'I' => :int,      # Integer
+      'L' => :ulong,    # Unsigned Long
+      'B' => :int       # Boolean [Added for windows-api compatibility]
     }
 
     # Given the prototype, return the underlying FFI data type.
