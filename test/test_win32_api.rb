@@ -12,133 +12,154 @@ require 'test/unit'
 include Win32
 
 class TC_Win32_API < Test::Unit::TestCase
-   def setup
-      @buf = 0.chr * 260
-      @gfa = API.new('GetFileAttributes', 'S', 'L')
-      @gcd = API.new('GetCurrentDirectory', 'LP')
-      @gle = API.new('GetLastError', 'V', 'L')
-      @str = API.new('strstr', 'PP', 'P', 'msvcrt')
-   end
+  def setup
+    @buf = 0.chr * 260
+    @gfa = API.new('GetFileAttributes', 'S', 'L')
+    @gcd = API.new('GetCurrentDirectory', 'LP')
+    @gle = API.new('GetLastError', 'V', 'L')
+    @str = API.new('strstr', 'PP', 'P', 'msvcrt')
+  end
 
-   def test_version
-      assert_equal('1.5.0', API::VERSION)
-   end
+  test 'version number is up to date' do
+    assert_equal('1.5.0', API::VERSION)
+  end
 
-   def test_constructor_basic
-      assert_nothing_raised{ API.new('GetCurrentDirectory') }
-      assert_nothing_raised{ API.new('GetCurrentDirectory', 'LP') }
-      assert_nothing_raised{ API.new('GetCurrentDirectory', 'LP', 'L') }
-      assert_nothing_raised{ API.new('GetCurrentDirectory', 'LP', 'L', 'kernel32') }
-   end
+  test 'constructor accepts only argument' do
+    assert_nothing_raised{ API.new('GetCurrentDirectory') }
+  end
+
+  test 'constructor accepts an explicit function prototype' do
+    assert_nothing_raised{ API.new('GetCurrentDirectory', 'LP') }
+  end
+
+  test 'constructor accepts an explicit return type' do
+    assert_nothing_raised{ API.new('GetCurrentDirectory', 'LP', 'L') }
+  end
+
+  test 'constructor accepts an explicit dll name' do
+    assert_nothing_raised{ API.new('GetCurrentDirectory', 'LP', 'L', 'kernel32') }
+  end
  
-   def test_call
-      assert_respond_to(@gcd, :call)
-      assert_nothing_raised{ @gcd.call(@buf.length, @buf) }
-      assert_equal(Dir.pwd.tr('/', "\\"), @buf.strip)
-   end
+  test 'call method is defined and can be called explicitly' do
+    assert_respond_to(@gcd, :call)
+    assert_nothing_raised{ @gcd.call(@buf.length, @buf) }
+    assert_equal(Dir.pwd.tr('/', "\\"), @buf.strip)
+  end
    
-   def test_call_with_void
-      assert_nothing_raised{ @gle.call }
-      assert_nothing_raised{ @gle.call(nil) }
-   end
+  test 'a method with a void prototype may be called with or without an explicit nil' do
+    assert_nothing_raised{ @gle.call }
+    assert_nothing_raised{ @gle.call(nil) }
+  end
 
-   def test_call_return_value_on_failure
-      assert_equal(0xFFFFFFFF, @gfa.call('C:/foobarbazblah'))
-   end
+  test 'call method returns a value on failure' do
+    assert_equal(0xFFFFFFFF, @gfa.call('C:/foobarbazblah'))
+  end
    
-   def test_dll_name
-      assert_respond_to(@gcd, :dll_name)
-      assert_equal('kernel32', @gcd.dll_name)
-   end
+  test 'dll_name basic functionality' do
+    assert_respond_to(@gcd, :dll_name)
+    assert_equal('kernel32', @gcd.dll_name)
+  end
    
-   def test_function_name
-      assert_respond_to(@gcd, :function_name)
-      assert_equal('GetCurrentDirectory', @gcd.function_name)
-      assert_equal('strstr', @str.function_name)
-   end
+  test 'function_name basic funcitonality' do
+    assert_respond_to(@gcd, :function_name)
+    assert_equal('GetCurrentDirectory', @gcd.function_name)
+    assert_equal('strstr', @str.function_name)
+  end
    
-   def test_effective_function_name_default
-      assert_respond_to(@gcd, :effective_function_name)
-      assert_equal('GetCurrentDirectoryA', @gcd.effective_function_name)
-      assert_equal('strstr', @str.effective_function_name)
-   end
+  test 'effective_function_name basic funcitonality' do
+    assert_respond_to(@gcd, :effective_function_name)
+    assert_equal('GetCurrentDirectoryA', @gcd.effective_function_name)
+    assert_equal('strstr', @str.effective_function_name)
+  end
 
-   def test_effective_function_name_default_explicit_ansi
-      @gcd = API.new('GetCurrentDirectoryA', 'LP')
-      assert_equal('GetCurrentDirectoryA', @gcd.effective_function_name)
-   end
+  test 'effective_function_name returns expected ANSI function name' do
+    @gcd = API.new('GetCurrentDirectoryA', 'LP')
+    assert_equal('GetCurrentDirectoryA', @gcd.effective_function_name)
+  end
 
-   def test_effective_function_name_default_explicit_wide
-      @gcd = API.new('GetCurrentDirectoryW', 'LP')
-      assert_equal('GetCurrentDirectoryW', @gcd.effective_function_name)
-   end
+  test 'effective_function_name returns expected wide function name' do
+    @gcd = API.new('GetCurrentDirectoryW', 'LP')
+    assert_equal('GetCurrentDirectoryW', @gcd.effective_function_name)
+  end
    
-   def test_prototype
-      assert_respond_to(@gcd, :prototype)
-      assert_equal(['L', 'P'], @gcd.prototype)
-   end
+  test 'prototype basic functionality' do
+    assert_respond_to(@gcd, :prototype)
+    assert_equal(['L', 'P'], @gcd.prototype)
+  end
    
-   def test_return_type
-      assert_respond_to(@gcd, :return_type)
-      assert_equal('L', @gcd.return_type)
-   end
+  test 'return_type basic functionality' do
+    assert_respond_to(@gcd, :return_type)
+    assert_equal('L', @gcd.return_type)
+  end
    
-   def test_constructor_high_iteration
-      assert_nothing_raised{
-         1000.times{ API.new('GetUserName', 'P', 'P', 'advapi32') }
-      }
-   end
+  test 'high iteration testing for constructor' do
+    assert_nothing_raised{
+      1000.times{ API.new('GetUserName', 'P', 'P', 'advapi32') }
+    }
+  end
    
-   def test_constructor_expected_failures
-      assert_raise(ArgumentError){ API.new }
-      assert_raise(ArgumentError){ API.new('GetUserName', ('L' * 21), 'X') }
-   end
+  test 'constructor requires at least one argument' do
+    assert_raise(ArgumentError){ API.new }
+  end
 
-   def test_constructor_expected_lib_load_failures
-      assert_raise(API::LoadLibraryError){ API.new('NoSuchFunction', 'PL', 'I') }
-      assert_raise(API::LoadLibraryError){ API.new('GetUserName', 'PL', 'I', 'foo') }
-      assert_raise(API::PrototypeError){ API.new('GetUserName', 'X', 'I', 'advapi32') }
-      assert_raise(API::PrototypeError){ API.new('GetUserName', 'PL', 'X', 'advapi32') }
-   end
+  test 'maximum prototype size is 20 characters' do
+    assert_raise(ArgumentError){ API.new('GetUserName', ('L' * 21), 'X') }
+  end
 
-   def test_constructor_expected_failure_messages
-      assert_raise_message("Unable to load function 'Zap', 'ZapA', or 'ZapW'"){
-         API.new('Zap')
-      }
+  test 'an error is raised if the function is not found' do
+    assert_raise(API::LoadLibraryError){ API.new('NoSuchFunction', 'PL', 'I') }
+  end
 
-      assert_raise_message("Unable to load function 'strxxx'"){
-         API.new('strxxx', 'P', 'L', 'msvcrt')
-      }
+  test 'an error is raised if the function cannot be found in the dll specified' do
+    assert_raise(API::LoadLibraryError){ API.new('GetUserName', 'PL', 'I', 'foo') }
+  end
 
-      assert_raise_message("Illegal prototype 'X'"){
-         API.new('GetUserName', 'X', 'I', 'advapi32')
-      }
+  test 'an error is raised if an invalid prototype is used' do
+    assert_raise(API::PrototypeError){ API.new('GetUserName', 'X', 'I', 'advapi32') }
+  end
 
-      assert_raise_message("Illegal return type 'Y'"){
-         API.new('GetUserName', 'PL', 'Y', 'advapi32')
-      }
-   end
+  test 'an error is raised if an invalid return type is used' do
+    assert_raise(API::PrototypeError){ API.new('GetUserName', 'PL', 'X', 'advapi32') }
+  end
 
-   def test_call_expected_failures
-      assert_raise(TypeError){ @gcd.call('test', @buf) }
-   end
+  test 'expected error messages for invalid constructor calls' do
+    assert_raise_message("Unable to load function 'Zap', 'ZapA', or 'ZapW'"){
+      API.new('Zap')
+    }
 
-   def test_error_classes
-      assert_not_nil(Win32::API::Error)
-      assert_not_nil(Win32::API::LoadLibraryError)
-      assert_not_nil(Win32::API::PrototypeError)
-   end
+    assert_raise_message("Unable to load function 'strxxx'"){
+      API.new('strxxx', 'P', 'L', 'msvcrt')
+    }
 
-   def test_error_class_relationships
-      assert_kind_of(RuntimeError, Win32::API::Error.new)
-      assert_kind_of(Win32::API::Error, Win32::API::LoadLibraryError.new)
-      assert_kind_of(Win32::API::Error, Win32::API::PrototypeError.new)
-   end
+    assert_raise_message("Illegal prototype 'X'"){
+      API.new('GetUserName', 'X', 'I', 'advapi32')
+    }
 
-   def teardown
-      @buf = nil
-      @gcd = nil
-      @gle = nil
-      @str = nil
-   end
+    assert_raise_message("Illegal return type 'Y'"){
+      API.new('GetUserName', 'PL', 'Y', 'advapi32')
+    }
+  end
+
+  test 'a type error is raised if an argument type does not match the prototype' do
+    assert_raise(TypeError){ @gcd.call('test', @buf) }
+  end
+
+  test 'various error classes are declared' do
+    assert_not_nil(Win32::API::Error)
+    assert_not_nil(Win32::API::LoadLibraryError)
+    assert_not_nil(Win32::API::PrototypeError)
+  end
+
+  test 'error class parent types' do
+    assert_kind_of(RuntimeError, Win32::API::Error.new)
+    assert_kind_of(Win32::API::Error, Win32::API::LoadLibraryError.new)
+    assert_kind_of(Win32::API::Error, Win32::API::PrototypeError.new)
+  end
+
+  def teardown
+    @buf = nil
+    @gcd = nil
+    @gle = nil
+    @str = nil
+  end
 end
