@@ -46,11 +46,6 @@ class TC_Win32_API < Test::Unit::TestCase
     assert_equal(Dir.pwd.tr('/', "\\"), @buf.strip)
   end
    
-  test 'a method with a void prototype may be called with or without an explicit nil' do
-    assert_nothing_raised{ @gle.call }
-    assert_nothing_raised{ @gle.call(nil) }
-  end
-
   test 'call method returns a value on failure' do
     assert_equal(0xFFFFFFFF, @gfa.call('C:/foobarbazblah'))
   end
