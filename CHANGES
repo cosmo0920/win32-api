@@ -1,3 +1,8 @@
+== 1.5.0 - ???
+* Now uses FFI instead of C.
+* Ability to pass explicit nil for functions declared with void protoypes is
+  no longer supported. 
+
 == 1.4.5 - 24-Aug-2009
 * Reverted the change in 1.4.4. We need unsigned longs in a few cases.
   Consequently, you should upgrade windows-pr to 1.0.8 or later because
