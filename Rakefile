@@ -19,23 +19,26 @@ task :install_gem => [:gem] do
 end
 
 namespace :test do
-   desc 'Run all tests'
-   task :all do
-      Dir['test/test*'].each{ |file| ruby "-Ilib #{file}" }
-   end
+  desc 'Run all tests'
+  task :all do
+    Dir['test/test*'].each{ |file| ruby "-Ilib #{file}" }
+  end
 
-   desc 'Run tests for the Win32::API class'
-   task :core do
-      ruby "-Ilib test/test_win32_api.rb"
-   end
+  desc 'Run tests for the Win32::API class'
+  task :core do
+    ruby "-Ilib test/test_win32_api.rb"
+  end
 
-   desc 'Run tests for the Win32::API::Function class'
-   task :function do
-      ruby "-Ilib test/test_win32_api_function.rb"
-   end
+  desc 'Run tests for the Win32::API::Function class'
+  task :function do
+    ruby "-Ilib test/test_win32_api_function.rb"
+  end
 
-   desc 'Run tests for the Win32::API::Callback class'
-   task :callback do
-      ruby "-Ilib test/test_win32_api_callback.rb"
-   end
+  desc 'Run tests for the Win32::API::Callback class'
+  task :callback do
+    ruby "-Ilib test/test_win32_api_callback.rb"
+  end
 end
+
+task :test => ['test:all']
+task :default => ['test:all']
