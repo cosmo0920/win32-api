@@ -11,132 +11,130 @@ require 'ffi'
 # The Win32 module serves as a namespace only.
 module Win32  
 
-   # The API class encapsulates a function pointer to a Windows API function.
-   #--
-   # For the sake of FFI, the API class must be a module apparently.
-   #
-   class API < Module
-      # The API::Error class serves as a base class for other errors.
-      class Error < RuntimeError; end
+  # The API class encapsulates a function pointer to a Windows API function.
+  #--
+  # For the sake of FFI, the API class must be a module apparently.
+  #
+  class API < Module
+    # The API::Error class serves as a base class for other errors.
+    class Error < RuntimeError; end
 
-      # The LoadLibraryError class is raised if a function cannot be found or loaded.
-      class LoadLibraryError < Error; end
+    # The LoadLibraryError class is raised if a function cannot be found or loaded.
+    class LoadLibraryError < Error; end
 
-      # The PrototypeError class is raised if an invalid prototype is passed.
-      class PrototypeError < Error; end
+    # The PrototypeError class is raised if an invalid prototype is passed.
+    class PrototypeError < Error; end
       
-      # The version of the win32-api library
-      VERSION = '1.5.0'
+    # The version of the win32-api library
+    VERSION = '1.5.0'
       
-      private
+    private
 
-      # :stopdoc: #
- 
-      SUFFIXES = ['', 'A', 'W']
+    # :stopdoc: #
 
-      TypeDefs = {
-         'K' => :void, # Placeholder for now
-         'V' => :void,
-         'S' => :string,
-         'P' => :pointer,
-         'I' => :int,
-         'L' => :ulong,
-         'B' => :int      # Added this to make it work with windows-api
+    SUFFIXES = ['', 'A', 'W']
+
+    TypeDefs = {
+      'K' => :void, # Placeholder for now
+      'V' => :void,
+      'S' => :string,
+      'P' => :pointer,
+      'I' => :int,
+      'L' => :ulong,
+      'B' => :int   # Added this to make it work with windows-api
+    }
+
+    # Given the prototype, return the underlying FFI data type.
+    def self.find_prototype(name)
+      TypeDefs.fetch(name){
+        raise PrototypeError, "Illegal prototype '#{name}'"
+      }
+    end
+
+    # Given the return type, return the underlying FFI data type.
+    def self.find_return_type(name)
+      TypeDefs.fetch(name){
+        raise PrototypeError, "Illegal return type '#{name}'"
+      }
+    end
+
+    # Takes an array of prototype strings and returns an array of the
+    # underlying FFI data types.
+    def self.map_prototype(prototype)
+      types = []
+
+      prototype.each{ |proto|
+        break if proto == 'V'
+        types << self.find_prototype(proto)
       }
 
-      # Given the prototype, return the underlying FFI data type.
-      def self.find_prototype(name)
-         TypeDefs.fetch(name){
-            raise PrototypeError, "Illegal prototype '#{name}'"
-         }
+      types
+    end
+
+    public
+
+    # :startdoc:
+
+    attr_reader :function_name
+    attr_reader :effective_function_name
+    attr_reader :prototype
+    attr_reader :return_type
+    attr_reader :dll_name
+
+    def initialize(func, proto='V', rtype='L', lib='kernel32')
+      extend FFI::Library
+
+      if proto.length > 20
+        raise ArgumentError, "too many parameters: #{proto.length}"
       end
 
-      # Given the return type, return the underlying FFI data type.
-      def self.find_return_type(name)
-         TypeDefs.fetch(name){
-            raise PrototypeError, "Illegal return type '#{name}'"
-         }
+      proto = proto.split('') unless proto.is_a?(Array)
+
+      @function_name = func
+      @prototype     = proto
+      @return_type   = rtype
+      @dll_name      = lib
+
+      @effective_function_name = func
+
+      # Re-raise a LoadError as a LoadLibraryError. This is done to
+      # distinguish failure to load a Ruby library vs failure to find
+      # a particular DLL.
+      #
+      begin
+        ffi_lib lib
+      rescue LoadError
+        raise LoadLibraryError
       end
 
-      # Takes an array of prototype strings and returns an array of the
-      # underlying FFI data types.
-      def self.map_prototype(prototype)
-         types = []
+      ffi_convention(:stdcall)
+      attached = false
 
-         prototype.each{ |proto|
-            break if proto == 'V'
-            types << self.find_prototype(proto)
-         }
+      SUFFIXES.each{ |suffix|
+        @effective_function_name = func.to_s + suffix
 
-         types
+        begin
+          attach_function(
+            :call,
+             @effective_function_name,
+             API.map_prototype(proto),
+             API.find_return_type(rtype)
+          )
+        rescue FFI::NotFoundError
+          # Do nothing yet. Raise an error later if all attempts fail.
+        else
+          attached = true
+          break
+        end
+      }
+
+      if @dll_name.match('msvc')
+        msg = "Unable to load function '#{func}'"
+      else
+        msg = "Unable to load function '#{func}', '#{func}A', or '#{func}W'"
       end
-
-      public
-
-      # :startdoc:
-
-      attr_reader :function_name
-      attr_reader :effective_function_name
-      attr_reader :prototype
-      attr_reader :return_type
-      attr_reader :dll_name
-
-      def initialize(func, proto='V', rtype='L', lib='kernel32')
-         extend FFI::Library
-
-         if proto.length > 20
-            raise ArgumentError, "too many parameters: #{proto.length}"
-         end
-
-         unless proto.is_a?(Array)
-            proto = proto.split('')
-         end
-
-         @function_name = func
-         @prototype     = proto
-         @return_type   = rtype
-         @dll_name      = lib
-
-         @effective_function_name = func
-
-         # Re-raise a LoadError as a LoadLibraryError. This is done to
-         # distinguish failure to load a Ruby library vs failure to find
-         # a particular DLL.
-         #
-         begin
-            ffi_lib lib
-         rescue LoadError
-            raise LoadLibraryError
-         end
-
-         ffi_convention(:stdcall)
-         attached = false
-
-         SUFFIXES.each{ |suffix|
-            @effective_function_name = func.to_s + suffix
-
-            begin
-               attach_function(
-                  :call,
-                  @effective_function_name,
-                  API.map_prototype(proto),
-                  API.find_return_type(rtype)
-               )
-            rescue FFI::NotFoundError
-               # Do nothing yet. Raise an error later if all attempts fail.
-            else
-               attached = true
-               break
-            end
-         }
-
-         if @dll_name.match('msvc')
-            msg = "Unable to load function '#{func}'"
-         else
-            msg = "Unable to load function '#{func}', '#{func}A', or '#{func}W'"
-         end
          
-         raise LoadLibraryError, msg if !attached
-      end
-   end
+      raise LoadLibraryError, msg if !attached
+    end
+  end
 end
