@@ -1,3 +1,9 @@
+== 1.4.7 - 4-Dec-2010
+* An internal error formatting function now resorts to the default
+  LANGID on error 1815 (ERROR_RESOURCE_LANG_NOT_FOUND). Thanks go to
+  Little Snake for the spot.
+* Added a default Rake task and refactored the clean task.
+
 == 1.4.6 - 9-Feb-2010
 * Fixed a warning that showed up with MinGW/gcc caused by an unnecessary
   pointer dereference.

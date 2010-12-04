@@ -21,7 +21,7 @@ class TC_Win32_API < Test::Unit::TestCase
    end
 
    def test_version
-      assert_equal('1.4.6', API::VERSION)
+      assert_equal('1.4.7', API::VERSION)
    end
 
    def test_constructor_basic

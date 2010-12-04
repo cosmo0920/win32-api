@@ -17,7 +17,7 @@
 #endif
 
 #define MAX_BUF 1024
-#define WINDOWS_API_VERSION "1.4.6"
+#define WINDOWS_API_VERSION "1.4.7"
 
 #define _T_VOID     0
 #define _T_LONG     1
@@ -56,61 +56,64 @@ static VALUE api_allocate(VALUE klass){
  * Internal use only.
  */
 char* StringError(DWORD dwError){
-   LPVOID lpMsgBuf;
-   static char buf[MAX_PATH];
-   DWORD dwLen;
+  LPVOID lpMsgBuf;
+  static char buf[MAX_PATH];
+  DWORD dwLen, dwLastError;
 
-   // Assume ASCII error messages from the Windows API
-   dwLen = FormatMessageA(
+  // Assume ASCII (English) error messages from the Windows API
+  dwLen = FormatMessageA(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    FORMAT_MESSAGE_FROM_SYSTEM |
+    FORMAT_MESSAGE_IGNORE_INSERTS,
+    NULL,
+    dwError,
+    MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
+    (LPSTR)&lpMsgBuf,
+    0,
+    NULL
+  );
+
+  dwLastError = GetLastError();
+
+  /* It appears that Windows doesn't necessarily ship with the DLL
+   * required to always use English error messages. Check for error
+   * ERROR_MUI_FILE_NOT_FOUND (15100) or ERROR_RESOURCE_LANG_NOT_FOUND (1815)
+   * and try again if necessary.
+   */
+  if(!dwLen && (dwLastError == 15100 || dwLastError == 1815)){
+    dwLen = FormatMessageA(
       FORMAT_MESSAGE_ALLOCATE_BUFFER |
       FORMAT_MESSAGE_FROM_SYSTEM |
       FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
       dwError,
-      MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
+      0,
       (LPSTR)&lpMsgBuf,
       0,
       NULL
-   );
+    );
+  }
 
-   /* It appears that Windows doesn't necessarily ship with the DLL
-    * required to always use English error messages. Check for error
-    * ERROR_MUI_FILE_NOT_FOUND (15100), and try again if necessary.
-    */
-   if(!dwLen && GetLastError() == 15100){
-      dwLen = FormatMessageA(
-         FORMAT_MESSAGE_ALLOCATE_BUFFER |
-         FORMAT_MESSAGE_FROM_SYSTEM |
-         FORMAT_MESSAGE_IGNORE_INSERTS,
-         NULL,
-         dwError,
-         0,
-         (LPSTR)&lpMsgBuf,
-         0,
-         NULL
-      );
-   }
+  if(!dwLen){
+    rb_raise(
+      cAPIError,
+      "Attempt to format message failed (error = '%d')",
+      GetLastError()
+    );
+  }
 
-   if(!dwLen){
-      rb_raise(
-         cAPIError,
-         "Attempt to format message failed (error = '%d')",
-         GetLastError()
-      );
-   }
+  memset(buf, 0, MAX_PATH);
 
-   memset(buf, 0, MAX_PATH);
-
-   /* remove \r\n */
+  // Remove \r\n at end of string.
 #ifdef HAVE_STRNCPY_S
-   strncpy_s(buf, MAX_PATH, lpMsgBuf, dwLen - 2);
+  strncpy_s(buf, MAX_PATH, lpMsgBuf, dwLen - 2);
 #else
-   strncpy(buf, lpMsgBuf, dwLen - 2);
+  strncpy(buf, lpMsgBuf, dwLen - 2);
 #endif
 
-   LocalFree(lpMsgBuf);
+  LocalFree(lpMsgBuf);
 
-   return buf;
+  return buf;
 }
 
 /*
@@ -941,6 +944,6 @@ void Init_api(){
 
    /* Constants */
 
-   /* 1.4.6: The version of the win32-api library */
+   /* 1.4.7: The version of the win32-api library */
    rb_define_const(cAPI, "VERSION", rb_str_new2(WINDOWS_API_VERSION));
 }
