@@ -11,7 +11,7 @@ CLEAN.include(
   '**/*.o',                 # C object file
   '**/*.log',               # Ruby extension build log
   '**/Makefile',            # C Makefile
-  '**/conftest.dSYM',       # OS X build directory
+  '**/*.stackdump',         # Junk that can happen on Windows
   "**/*.#{CONFIG['DLEXT']}" # C shared object
 )
 
@@ -20,7 +20,7 @@ make = CONFIG['host_os'] =~ /mingw|cygwin/i ? 'make' : 'nmake'
 desc 'Build the ruby.exe.manifest if it does not already exist'
 task :build_manifest do
   version = CONFIG['host_os'].split('_')[1]
-   
+
   if version && version.to_i >= 80
     unless File.exist?(File.join(CONFIG['bindir'], 'ruby.exe.manifest'))
       Dir.chdir(CONFIG['bindir']) do
@@ -48,7 +48,7 @@ end
 
 namespace 'gem' do
   desc 'Build a standard gem'
-  task :create => [:clean] do 
+  task :create => [:clean] do
     spec = eval(IO.read('win32-api.gemspec'))
     Gem::Builder.new(spec).build
   end
