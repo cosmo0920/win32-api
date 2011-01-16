@@ -237,8 +237,8 @@ static VALUE api_init(int argc, VALUE* argv, VALUE self)
    FARPROC fProc;
    Win32API* ptr;
    int i;
-   char* first  = "A";
-   char* second = "W";
+   const char* first  = "A";
+   const char* second = "W";
    VALUE v_proc, v_proto, v_return, v_dll;
 
    rb_scan_args(argc, argv, "13", &v_proc, &v_proto, &v_return, &v_dll);
