@@ -5,15 +5,17 @@ require 'rbconfig'
 include Config
 
 CLEAN.include(
-  'lib',
   '**/*.gem',               # Gem files
   '**/*.rbc',               # Rubinius
   '**/*.o',                 # C object file
   '**/*.log',               # Ruby extension build log
   '**/Makefile',            # C Makefile
+  '**/*.def',               # Definition files
   '**/*.stackdump',         # Junk that can happen on Windows
   "**/*.#{CONFIG['DLEXT']}" # C shared object
 )
+
+CLOBBER.include('lib') # Generated when building binaries
 
 make = CONFIG['host_os'] =~ /mingw|cygwin/i ? 'make' : 'nmake'
 
@@ -30,33 +32,52 @@ task :build_manifest do
   end
 end
 
-desc 'Install the win32-api library (non-gem)'
-task :install => [:build] do
-  Dir.chdir('ext'){
-    sh "#{make} install"
-  }
-end
-
-desc "Build Win32::API (but don't install it)"
+desc "Build the win32-api library"
 task :build => [:clean, :build_manifest] do
   Dir.chdir('ext') do
     ruby "extconf.rb"
     sh make
-    cp "api.so", "win32" # For the test suite
+    cp 'api.so', 'win32' # For testing
   end
 end
 
 namespace 'gem' do
-  desc 'Build a standard gem'
+  desc 'Build the win32-api gem'
   task :create => [:clean] do
     spec = eval(IO.read('win32-api.gemspec'))
     Gem::Builder.new(spec).build
   end
 
   desc 'Build a binary gem'
-  task :binary => [:build] do
-    mkdir_p 'lib/win32'
-    cp 'ext/api.so', 'lib/win32'
+  task :binary, :ruby18, :ruby19 do |task, args|
+    args.with_defaults(:ruby18 => "c:/ruby/bin/ruby", :ruby19 => "c:/usr/local/bin/ruby")
+
+    Rake::Task[:clobber].invoke
+    mkdir_p 'lib/win32/ruby18/win32'
+    mkdir_p 'lib/win32/ruby19/win32'
+
+    args.each{ |key, rubyx|
+      Dir.chdir('ext') do
+        # rubyx += " -rdevkit" if key.to_s == 'ruby19' # TODO: Detect devkit
+        sh "#{rubyx} extconf.rb"
+        sh "make"
+        if key.to_s == 'ruby18'
+          cp 'api.so', '../lib/win32/ruby18/win32/api.so'
+        else
+          cp 'api.so', '../lib/win32/ruby19/win32/api.so'
+        end
+        Rake::Task[:clean].invoke
+      end
+    }
+
+    # Create a stub file that automatically require's the correct binary
+    File.open('lib/win32/api.rb', 'w'){ |fh|
+      fh.puts "if RUBY_VERSION.to_f >= 1.9"
+      fh.puts "  require File.join(File.dirname(__FILE__), 'ruby19/win32/api')"
+      fh.puts "else"
+      fh.puts "  require File.join(File.dirname(__FILE__), 'ruby18/win32/api')"
+      fh.puts "end"
+    }
 
     spec = eval(IO.read('win32-api.gemspec'))
     spec.platform = Gem::Platform::CURRENT

@@ -1,3 +1,9 @@
+== 1.4.8 - 16-Jan-2011
+* A binary for both 1.8.x and 1.9.x is now shipped as part of the binary
+  build. A stub file is used to dynamically require the correct binary based
+  on your current version of Ruby.
+* Some updates to the Rakefile to help build multiple binaries.
+
 == 1.4.7 - 4-Dec-2010
 * An internal error formatting function now resorts to the default
   LANGID on error 1815 (ERROR_RESOURCE_LANG_NOT_FOUND). Thanks go to
