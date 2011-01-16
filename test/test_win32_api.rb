@@ -21,7 +21,7 @@ class TC_Win32_API < Test::Unit::TestCase
    end
 
    def test_version
-      assert_equal('1.4.7', API::VERSION)
+      assert_equal('1.4.8', API::VERSION)
    end
 
    def test_constructor_basic
@@ -97,22 +97,30 @@ class TC_Win32_API < Test::Unit::TestCase
       assert_raise(API::PrototypeError){ API.new('GetUserName', 'PL', 'X', 'advapi32') }
    end
 
-   def test_constructor_expected_failure_messages
-      assert_raise_message("Unable to load function 'Zap', 'ZapA', or 'ZapW'"){
-         API.new('Zap')
-      }
+   test "constructor returns expected error message if function not found" do
+     msg = "Unable to load function "
+     assert_raise_message(msg + "'Zap', 'ZapA', or 'ZapW'"){ API.new('Zap') }
+     assert_raise_message(msg + "'strxxx'"){ API.new('strxxx', 'P', 'L', 'msvcrt') }
+   end
 
-      assert_raise_message("Unable to load function 'strxxx'"){
-         API.new('strxxx', 'P', 'L', 'msvcrt')
-      }
+   test "constructor returns expected error message if prototype is invalid" do
+     msg = "Illegal prototype 'X'"
+     assert_raise_message(msg){ API.new('GetUserName', 'X', 'I', 'advapi32') }
+   end
 
-      assert_raise_message("Illegal prototype 'X'"){
-         API.new('GetUserName', 'X', 'I', 'advapi32')
-      }
+   test "constructor returns expected error message if return type is invalid" do
+     msg = "Illegal return type 'Y'"
+     assert_raise_message(msg){ API.new('GetUserName', 'PL', 'Y', 'advapi32') }
+   end
 
-      assert_raise_message("Illegal return type 'Y'"){
-         API.new('GetUserName', 'PL', 'Y', 'advapi32')
-      }
+   test "constructor returns expected error message if too many parameters" do
+     msg = "too many parameters: 25"
+     assert_raise_message(msg){ API.new('GetFileAttributes', 'S' * 25, 'L') }
+   end
+
+   test "call method returns expected error message if too many parameters" do
+     msg = "wrong number of parameters: expected 2, got 3"
+     assert_raise_message(msg){ @str.call('test', 'test', 'test') }
    end
 
    def test_call_expected_failures
