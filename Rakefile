@@ -65,7 +65,7 @@ namespace 'gem' do
 
     args.each{ |key, rubyx|
       Dir.chdir('ext') do
-        # rubyx += " -rdevkit" if key.to_s == 'ruby19' # TODO: Detect devkit
+        sh "make distclean" rescue nil
         sh "#{rubyx} extconf.rb"
         sh "make"
         if key.to_s == 'ruby18'
@@ -73,7 +73,6 @@ namespace 'gem' do
         else
           cp 'api.so', '../lib/win32/ruby19/win32/api.so'
         end
-        Rake::Task[:clean].invoke
       end
     }
 
