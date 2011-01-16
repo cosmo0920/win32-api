@@ -17,7 +17,7 @@
 #endif
 
 #define MAX_BUF 1024
-#define WINDOWS_API_VERSION "1.4.7"
+#define WINDOWS_API_VERSION "1.4.8"
 
 #define _T_VOID     0
 #define _T_LONG     1
@@ -257,7 +257,7 @@ static VALUE api_init(int argc, VALUE* argv, VALUE self)
 
    // Set an arbitrary limit of 20 parameters
    if(20 < RARRAY_LEN(v_proto))
-      rb_raise(rb_eArgError, "too many parameters: %d\n", RARRAY_LEN(v_proto));
+      rb_raise(rb_eArgError, "too many parameters: %d", RARRAY_LEN(v_proto));
 
    // Set the default dll to 'kernel32'
    if(NIL_P(v_dll))
@@ -763,7 +763,7 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
       }
       else{
          rb_raise(rb_eArgError,
-            "wrong number of parameters: expected %d, got %d",
+            "wrong number of parameters: expected %li, got %li",
             RARRAY_LEN(v_proto), RARRAY_LEN(v_args)
          );
       }
@@ -944,6 +944,6 @@ void Init_api(){
 
    /* Constants */
 
-   /* 1.4.7: The version of the win32-api library */
+   /* 1.4.8: The version of the win32-api library */
    rb_define_const(cAPI, "VERSION", rb_str_new2(WINDOWS_API_VERSION));
 }
