@@ -56,7 +56,7 @@ namespace 'gem' do
   task :binary, :ruby18, :ruby19 do |task, args|
     args.with_defaults(
       :ruby18 => "c:/ruby/bin/ruby",
-      :ruby19 => "c:/usr/local/bin/ruby"
+      :ruby19 => "c:/ruby19/bin/ruby"
     )
 
     Rake::Task[:clobber].invoke
