@@ -11,6 +11,10 @@ CLEAN.include(
   '**/*.log',               # Ruby extension build log
   '**/Makefile',            # C Makefile
   '**/*.def',               # Definition files
+  '**/*.exp',
+  '**/*.lib',
+  '**/*.pdb',
+  '**/*.obj',
   '**/*.stackdump',         # Junk that can happen on Windows
   "**/*.#{CONFIG['DLEXT']}" # C shared object
 )
@@ -50,7 +54,10 @@ namespace 'gem' do
 
   desc 'Build a binary gem'
   task :binary, :ruby18, :ruby19 do |task, args|
-    args.with_defaults(:ruby18 => "c:/ruby/bin/ruby", :ruby19 => "c:/usr/local/bin/ruby")
+    args.with_defaults(
+      :ruby18 => "c:/ruby/bin/ruby",
+      :ruby19 => "c:/usr/local/bin/ruby"
+    )
 
     Rake::Task[:clobber].invoke
     mkdir_p 'lib/win32/ruby18/win32'
