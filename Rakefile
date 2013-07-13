@@ -2,6 +2,7 @@ require 'rake'
 require 'rake/clean'
 require 'rake/testtask'
 require 'rbconfig'
+require 'devkit'
 include RbConfig
 
 CLEAN.include(
@@ -53,15 +54,17 @@ namespace 'gem' do
   end
 
   desc 'Build a binary gem'
-  task :binary, :ruby18, :ruby19 do |task, args|
+  task :binary, :ruby18, :ruby19, :ruby2 do |task, args|
     args.with_defaults(
       :ruby18 => "c:/ruby/bin/ruby",
-      :ruby19 => "c:/ruby19/bin/ruby"
+      :ruby19 => "c:/ruby19/bin/ruby",
+      :ruby19 => "c:/ruby2/bin/ruby"
     )
 
     Rake::Task[:clobber].invoke
     mkdir_p 'lib/win32/ruby18/win32'
     mkdir_p 'lib/win32/ruby19/win32'
+    mkdir_p 'lib/win32/ruby2/win32'
 
     args.each{ |key, rubyx|
       Dir.chdir('ext') do
@@ -70,18 +73,22 @@ namespace 'gem' do
         sh "make"
         if key.to_s == 'ruby18'
           cp 'api.so', '../lib/win32/ruby18/win32/api.so'
-        else
+        elsif key.to_s == 'ruby19'
           cp 'api.so', '../lib/win32/ruby19/win32/api.so'
+        else
+          cp 'api.so', '../lib/win32/ruby2/win32/api.so'
         end
       end
     }
 
     # Create a stub file that automatically require's the correct binary
     File.open('lib/win32/api.rb', 'w'){ |fh|
-      fh.puts "if RUBY_VERSION.to_f >= 1.9"
+      fh.puts "if RUBY_VERSION.to_f < 1.9"
+      fh.puts "  require File.join(File.dirname(__FILE__), 'ruby18/win32/api')"
+      fh.puts "elsif RUBY_VERSION.to_f < 2.0"
       fh.puts "  require File.join(File.dirname(__FILE__), 'ruby19/win32/api')"
       fh.puts "else"
-      fh.puts "  require File.join(File.dirname(__FILE__), 'ruby18/win32/api')"
+      fh.puts "  require File.join(File.dirname(__FILE__), 'ruby2/win32/api')"
       fh.puts "end"
     }
 
