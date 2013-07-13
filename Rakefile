@@ -2,7 +2,6 @@ require 'rake'
 require 'rake/clean'
 require 'rake/testtask'
 require 'rbconfig'
-require 'devkit'
 include RbConfig
 
 CLEAN.include(
@@ -55,13 +54,17 @@ namespace 'gem' do
 
   desc 'Build a binary gem'
   task :binary, :ruby18, :ruby19, :ruby2 do |task, args|
+    require 'devkit'
+
+    # These are just what's on my system at the moment. Subject to change.
     args.with_defaults(
-      :ruby18 => "c:/ruby/bin/ruby",
-      :ruby19 => "c:/ruby19/bin/ruby",
-      :ruby19 => "c:/ruby2/bin/ruby"
+      :ruby18 => "c:/ruby187/bin/ruby",
+      :ruby19 => "c:/ruby/bin/ruby",
+      :ruby2  => "c:/ruby2/bin/ruby"
     )
 
     Rake::Task[:clobber].invoke
+
     mkdir_p 'lib/win32/ruby18/win32'
     mkdir_p 'lib/win32/ruby19/win32'
     mkdir_p 'lib/win32/ruby2/win32'
@@ -71,6 +74,7 @@ namespace 'gem' do
         sh "make distclean" rescue nil
         sh "#{rubyx} extconf.rb"
         sh "make"
+
         if key.to_s == 'ruby18'
           cp 'api.so', '../lib/win32/ruby18/win32/api.so'
         elsif key.to_s == 'ruby19'
@@ -97,7 +101,11 @@ namespace 'gem' do
     spec.extensions = nil
     spec.files = spec.files.reject{ |f| f.include?('ext') }
 
-    Gem::Builder.new(spec).build
+    if Gem::VERSION.to_f < 2.0
+      Gem::Builder.new(spec).build
+    else
+      Gem::Package.build(spec)
+    end
   end
 
   desc 'Install the gem'
