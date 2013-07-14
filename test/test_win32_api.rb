@@ -1,14 +1,11 @@
 ############################################################################
 # test_win32_api.rb
-# 
+#
 # Test case for the Win32::API class. You should run this as Rake task,
 # i.e. 'rake test', instead of running it directly.
 ############################################################################
-require 'rubygems'
-gem 'test-unit'
-
 require 'win32/api'
-require 'test/unit'
+require 'test-unit'
 include Win32
 
 class TC_Win32_API < Test::Unit::TestCase
@@ -21,7 +18,7 @@ class TC_Win32_API < Test::Unit::TestCase
    end
 
    def test_version
-      assert_equal('1.4.8', API::VERSION)
+      assert_equal('1.4.9', API::VERSION)
    end
 
    def test_constructor_basic
@@ -30,13 +27,13 @@ class TC_Win32_API < Test::Unit::TestCase
       assert_nothing_raised{ API.new('GetCurrentDirectory', 'LP', 'L') }
       assert_nothing_raised{ API.new('GetCurrentDirectory', 'LP', 'L', 'kernel32') }
    end
- 
+
    def test_call
       assert_respond_to(@gcd, :call)
       assert_nothing_raised{ @gcd.call(@buf.length, @buf) }
       assert_equal(Dir.pwd.tr('/', "\\"), @buf.strip)
    end
-   
+
    def test_call_with_void
       assert_nothing_raised{ @gle.call }
       assert_nothing_raised{ @gle.call(nil) }
@@ -45,18 +42,18 @@ class TC_Win32_API < Test::Unit::TestCase
    def test_call_return_value_on_failure
       assert_equal(0xFFFFFFFF, @gfa.call('C:/foobarbazblah'))
    end
-   
+
    def test_dll_name
       assert_respond_to(@gcd, :dll_name)
       assert_equal('kernel32', @gcd.dll_name)
    end
-   
+
    def test_function_name
       assert_respond_to(@gcd, :function_name)
       assert_equal('GetCurrentDirectory', @gcd.function_name)
       assert_equal('strstr', @str.function_name)
    end
-   
+
    def test_effective_function_name_default
       assert_respond_to(@gcd, :effective_function_name)
       assert_equal('GetCurrentDirectoryA', @gcd.effective_function_name)
@@ -72,23 +69,23 @@ class TC_Win32_API < Test::Unit::TestCase
       @gcd = API.new('GetCurrentDirectoryW', 'LP')
       assert_equal('GetCurrentDirectoryW', @gcd.effective_function_name)
    end
-   
+
    def test_prototype
       assert_respond_to(@gcd, :prototype)
       assert_equal(['L', 'P'], @gcd.prototype)
    end
-   
+
    def test_return_type
       assert_respond_to(@gcd, :return_type)
       assert_equal('L', @gcd.return_type)
    end
-   
+
    def test_constructor_high_iteration
       assert_nothing_raised{
          1000.times{ API.new('GetUserName', 'P', 'P', 'advapi32') }
       }
    end
-   
+
    def test_constructor_expected_failures
       assert_raise(ArgumentError){ API.new }
       assert_raise(ArgumentError){ API.new('GetUserName', ('L' * 21), 'X') }

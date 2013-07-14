@@ -38,6 +38,7 @@ end
 
 desc "Build the win32-api library"
 task :build => [:clean, :build_manifest] do
+  require 'devkit'
   Dir.chdir('ext') do
     ruby "extconf.rb"
     sh make
@@ -46,10 +47,16 @@ task :build => [:clean, :build_manifest] do
 end
 
 namespace 'gem' do
+  require 'rubygems/package'
+
   desc 'Build the win32-api gem'
   task :create => [:clean] do
     spec = eval(IO.read('win32-api.gemspec'))
-    Gem::Builder.new(spec).build
+    if Gem::VERSION.to_f < 2.0
+      Gem::Builder.new(spec).build
+    else
+      Gem::Package.build(spec)
+    end
   end
 
   desc 'Build a binary gem'
