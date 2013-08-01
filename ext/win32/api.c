@@ -456,7 +456,7 @@ static VALUE func_init(int argc, VALUE* argv, VALUE self){
    if(NIL_P(v_return))
       v_return = rb_str_new2("L");
 
-   ptr->function = (FARPROC)NUM2LONG(v_address);
+   ptr->function = (FARPROC)NUM2SIZET(v_address);
 
    // Push the numeric prototypes onto our int array for later use.
 
@@ -558,7 +558,7 @@ DWORD CallbackFunction(CALLPARAM param, VALUE callback)
           break;
         case 'P':
           if(param.params[i])
-            argv[i] = rb_str_new2((char *)param.params[i]);
+            argv[i] = rb_str_new2((TCHAR *)&param.params[i]);
           break;
         case 'I':
           argv[i] = INT2NUM(param.params[i]);
