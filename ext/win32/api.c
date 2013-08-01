@@ -97,7 +97,7 @@ char* StringError(DWORD dwError){
   if(!dwLen){
     rb_raise(
       cAPIError,
-      "Attempt to format message failed (error = '%d')",
+      "Attempt to format message failed (error = '%lu')",
       GetLastError()
     );
   }
@@ -257,7 +257,7 @@ static VALUE api_init(int argc, VALUE* argv, VALUE self)
 
    // Set an arbitrary limit of 20 parameters
    if(20 < RARRAY_LEN(v_proto))
-      rb_raise(rb_eArgError, "too many parameters: %d", RARRAY_LEN(v_proto));
+      rb_raise(rb_eArgError, "too many parameters: %li", RARRAY_LEN(v_proto));
 
    // Set the default dll to 'kernel32'
    if(NIL_P(v_dll))
@@ -450,7 +450,7 @@ static VALUE func_init(int argc, VALUE* argv, VALUE self){
 
    // Set an arbitrary limit of 20 parameters
    if(20 < RARRAY_LEN(v_proto))
-      rb_raise(rb_eArgError, "too many parameters: %d\n", RARRAY_LEN(v_proto));
+      rb_raise(rb_eArgError, "too many parameters: %li\n", RARRAY_LEN(v_proto));
 
    // Set the default return type to 'L' (DWORD)
    if(NIL_P(v_return))
@@ -564,7 +564,7 @@ DWORD CallbackFunction(CALLPARAM param, VALUE callback)
           argv[i] = INT2NUM(param.params[i]);
           break;
         default:
-          rb_raise(cAPIProtoError, "Illegal prototype '%s'", a_proto[i]);
+          rb_raise(cAPIProtoError, "Illegal prototype '%c'", a_proto[i]);
       }
     }
 
@@ -586,7 +586,7 @@ DWORD CallbackFunction(CALLPARAM param, VALUE callback)
         return NUM2ULONG(v_retval);
         break;
       case 'S':
-        return (unsigned long)RSTRING_PTR(v_retval);
+        return (uintptr_t)RSTRING_PTR(v_retval);
         break;
       case 'P':
         if(NIL_P(v_retval)){
@@ -598,7 +598,7 @@ DWORD CallbackFunction(CALLPARAM param, VALUE callback)
         else{
           StringValue(v_retval);
           rb_str_modify(v_retval);
-          return (unsigned long)StringValuePtr(v_retval);
+          return (uintptr_t)StringValuePtr(v_retval);
         }
         break;
     }
