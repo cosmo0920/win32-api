@@ -17,7 +17,7 @@
 #endif
 
 #define MAX_BUF 1024
-#define WINDOWS_API_VERSION "1.4.9"
+#define WINDOWS_API_VERSION "1.5.0"
 
 #define _T_VOID     0
 #define _T_LONG     1
@@ -173,7 +173,7 @@ static VALUE callback_init(int argc, VALUE* argv, VALUE self)
       v_return = rb_str_new2("L");
    }
    else{
-      switch(*(char*)RSTRING_PTR(v_return)){
+      switch(*(TCHAR*)RSTRING_PTR(v_return)){
          case 'I': case 'L': case 'P': case 'V': case 'S':
             break;
          default:
@@ -186,7 +186,7 @@ static VALUE callback_init(int argc, VALUE* argv, VALUE self)
    rb_iv_set(self, "@function", v_proc);
    rb_iv_set(self, "@prototype", v_proto);
    rb_iv_set(self, "@return_type", v_return);
-   rb_iv_set(self, "@address", ULONG2NUM((LPARAM)find_callback(self,RSTRING_LEN(v_proto))));
+   rb_iv_set(self, "@address", SIZET2NUM((LPARAM)find_callback(self,RSTRING_LEN(v_proto))));
    ActiveCallback = self;
 
    return self;
@@ -336,7 +336,7 @@ static VALUE api_init(int argc, VALUE* argv, VALUE self)
 
    for(i = 0; i < RARRAY_LEN(v_proto); i++){
       SafeStringValue(RARRAY_PTR(v_proto)[i]);
-      switch(*(char*)StringValuePtr(RARRAY_PTR(v_proto)[i])){
+      switch(*(TCHAR*)StringValuePtr(RARRAY_PTR(v_proto)[i])){
          case 'L':
             ptr->prototype[i] = _T_LONG;
             break;
@@ -554,7 +554,7 @@ DWORD CallbackFunction(CALLPARAM param, VALUE callback)
       argv[i] = Qnil;
       switch(a_proto[i]){
         case 'L':
-          argv[i] = ULONG2NUM(param.params[i]);
+          argv[i] = SIZET2NUM(param.params[i]);
           break;
         case 'P':
           if(param.params[i])
@@ -583,7 +583,7 @@ DWORD CallbackFunction(CALLPARAM param, VALUE callback)
         return NUM2INT(v_retval);
         break;
       case 'L':
-        return NUM2ULONG(v_retval);
+        return NUM2SIZET(v_retval);
         break;
       case 'S':
         return (uintptr_t)RSTRING_PTR(v_retval);
@@ -593,7 +593,7 @@ DWORD CallbackFunction(CALLPARAM param, VALUE callback)
           return 0;
         }
         else if(FIXNUM_P(v_retval)){
-          return NUM2ULONG(v_retval);
+          return NUM2SIZET(v_retval);
         }
         else{
           StringValue(v_retval);
@@ -784,14 +784,14 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
       else
          switch(ptr->prototype[i]){
             case _T_LONG:
-               param.params[i] = NUM2ULONG(v_arg);
+               param.params[i] = NUM2SIZET(v_arg);
                break;
             case _T_INTEGER:
                param.params[i] = NUM2INT(v_arg);
                break;
             case _T_POINTER:
                if(FIXNUM_P(v_arg)){
-                  param.params[i] = NUM2ULONG(v_arg);
+                  param.params[i] = NUM2SIZET(v_arg);
                }
                else{
                   StringValue(v_arg);
@@ -802,13 +802,13 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
             case _T_CALLBACK:
                ActiveCallback = v_arg;
                v_proto = rb_iv_get(ActiveCallback, "@prototype");
-               param.params[i] = (LPARAM)NUM2ULONG(rb_iv_get(ActiveCallback, "@address"));;
+               param.params[i] = (LPARAM)NUM2SIZET(rb_iv_get(ActiveCallback, "@address"));;
                break;
             case _T_STRING:
                param.params[i] = (uintptr_t)RSTRING_PTR(v_arg);
                break;
             default:
-               param.params[i] = NUM2ULONG(v_arg);
+               param.params[i] = NUM2SIZET(v_arg);
          }
    }
 
@@ -824,7 +824,7 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
          v_return = INT2NUM(return_value);
          break;
       case _T_LONG:
-         v_return = ULONG2NUM(return_value);
+         v_return = SIZET2NUM(return_value);
          break;
       case _T_VOID:
          v_return = Qnil;
