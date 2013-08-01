@@ -608,52 +608,52 @@ DWORD CallbackFunction(CALLPARAM param, VALUE callback)
 }
 
 #define CALLBACK0(x) DWORD CALLBACK CallbackFunction0_##x() {\
-   CALLPARAM param = {0};\
+   CALLPARAM param = {{0}};\
    param.params[0] = 0;\
    return CallbackFunction(param,FuncTable[0][x]);\
 }
 
 #define CALLBACK1(x) DWORD CALLBACK CallbackFunction1_##x(DWORD p1) {\
-   CALLPARAM param = {p1};\
+   CALLPARAM param = {{p1}};\
    return CallbackFunction(param,FuncTable[1][x]);\
 }
 
 #define CALLBACK2(x) DWORD CALLBACK CallbackFunction2_##x(\
 DWORD p1, DWORD p2){\
-   CALLPARAM param = {p1,p2};\
+   CALLPARAM param = {{p1,p2}};\
    return CallbackFunction(param,FuncTable[2][x]);\
 }
 
 #define CALLBACK3(x) DWORD CALLBACK CallbackFunction3_##x(\
 DWORD p1, DWORD p2, DWORD p3){\
-   CALLPARAM param = {p1,p2,p3};\
+   CALLPARAM param = {{p1,p2,p3}};\
    return CallbackFunction(param,FuncTable[3][x]);\
 }
 
 #define CALLBACK4(x) DWORD CALLBACK CallbackFunction4_##x(\
 DWORD p1, DWORD p2, DWORD p3, DWORD p4){\
-   CALLPARAM param = {p1,p2,p3,p4};\
+   CALLPARAM param = {{p1,p2,p3,p4}};\
    return CallbackFunction(param,FuncTable[4][x]);\
 }
 
 #define CALLBACK5(x) DWORD CALLBACK CallbackFunction5_##x(\
    DWORD p1, DWORD p2, DWORD p3, DWORD p4, DWORD p5\
 ){\
-   CALLPARAM param = {p1,p2,p3,p4,p5};\
+   CALLPARAM param = {{p1,p2,p3,p4,p5}};\
    return CallbackFunction(param,FuncTable[5][x]);\
 }
 
 #define CALLBACK6(x) DWORD CALLBACK CallbackFunction6_##x(\
    DWORD p1, DWORD p2, DWORD p3, DWORD p4, DWORD p5, DWORD p6\
 ){\
-   CALLPARAM param = {p1,p2,p3,p4,p5,p6};\
+   CALLPARAM param = {{p1,p2,p3,p4,p5,p6}};\
    return CallbackFunction(param,FuncTable[6][x]);\
 }
 
 #define CALLBACK7(x) DWORD CALLBACK CallbackFunction7_##x(\
    DWORD p1, DWORD p2, DWORD p3, DWORD p4, DWORD p5, DWORD p6, DWORD p7\
 ){\
-   CALLPARAM param = {p1,p2,p3,p4,p5,p6,p7};\
+   CALLPARAM param = {{p1,p2,p3,p4,p5,p6,p7}};\
    return CallbackFunction(param,FuncTable[7][x]);\
 }
 
@@ -661,7 +661,7 @@ DWORD p1, DWORD p2, DWORD p3, DWORD p4){\
    DWORD p1, DWORD p2, DWORD p3, DWORD p4,\
    DWORD p5, DWORD p6, DWORD p7, DWORD p8\
 ){\
-   CALLPARAM param = {p1,p2,p3,p4,p5,p6,p7,p8};\
+   CALLPARAM param = {{p1,p2,p3,p4,p5,p6,p7,p8}};\
    return CallbackFunction(param,FuncTable[8][x]);\
 }
 
@@ -669,7 +669,7 @@ DWORD p1, DWORD p2, DWORD p3, DWORD p4){\
    DWORD p1, DWORD p2, DWORD p3, DWORD p4, DWORD p5,\
    DWORD p6, DWORD p7, DWORD p8, DWORD p9\
 ){\
-   CALLPARAM param = {p1,p2,p3,p4,p5,p6,p7,p8,p9};\
+   CALLPARAM param = {{p1,p2,p3,p4,p5,p6,p7,p8,p9}};\
    return CallbackFunction(param,FuncTable[9][x]);\
 }
 
@@ -741,7 +741,7 @@ void *find_callback(VALUE obj,int len)
 static VALUE api_call(int argc, VALUE* argv, VALUE self){
    VALUE v_proto, v_args, v_arg, v_return;
    Win32API* ptr;
-   unsigned long return_value;
+   uintptr_t return_value;
    int i = 0;
    int len;
 
@@ -776,7 +776,7 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
 
       // Convert nil to NULL.  Otherwise convert as appropriate.
       if(NIL_P(v_arg))
-         param.params[i] = (unsigned long)NULL;
+         param.params[i] = (uintptr_t)NULL;
       else if(v_arg == Qtrue)
          param.params[i] = TRUE;
       else if(v_arg == Qfalse)
@@ -796,7 +796,7 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
                else{
                   StringValue(v_arg);
                   rb_str_modify(v_arg);
-                  param.params[i] = (unsigned long)StringValuePtr(v_arg);
+                  param.params[i] = (uintptr_t)StringValuePtr(v_arg);
                }
                break;
             case _T_CALLBACK:
@@ -805,7 +805,7 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
                param.params[i] = (LPARAM)NUM2ULONG(rb_iv_get(ActiveCallback, "@address"));;
                break;
             case _T_STRING:
-               param.params[i] = (unsigned long)RSTRING_PTR(v_arg);
+               param.params[i] = (uintptr_t)RSTRING_PTR(v_arg);
                break;
             default:
                param.params[i] = NUM2ULONG(v_arg);
