@@ -60,23 +60,32 @@ namespace 'gem' do
   end
 
   desc 'Build a binary gem'
-  task :binary, :ruby18, :ruby19, :ruby2 do |task, args|
+  task :binary, :ruby18, :ruby19, :ruby2_32, :ruby2_64 do |task, args|
     require 'devkit'
 
-    # These are just what's on my system at the moment. Subject to change.
+    # These are just what's on my system at the moment. Adjust as needed.
     args.with_defaults(
-      :ruby18 => "c:/ruby187/bin/ruby",
-      :ruby19 => "c:/ruby/bin/ruby",
-      :ruby2  => "c:/ruby2/bin/ruby"
+      :ruby18   => "c:/ruby187/bin/ruby",
+      :ruby19   => "c:/ruby/bin/ruby",
+      :ruby2_32 => "c:/ruby2/bin/ruby",
+      :ruby2_64 => "c:/ruby200-x64/bin/ruby"
     )
 
     Rake::Task[:clobber].invoke
 
     mkdir_p 'lib/win32/ruby18/win32'
     mkdir_p 'lib/win32/ruby19/win32'
-    mkdir_p 'lib/win32/ruby2/win32'
+    mkdir_p 'lib/win32/ruby2_32/win32'
+    mkdir_p 'lib/win32/ruby2_64/win32'
 
     args.each{ |key, rubyx|
+      # Adjust devkit paths as needed.
+      if `"#{rubyx}" -v` =~ /x64/i
+        ENV['PATH'] = "C:/Devkit64/bin;C:/Devkit64/mingw/bin;" + ENV['PATH']
+      else
+        ENV['PATH'] = "C:/Devkit/bin;C:/Devkit/mingw/bin;" + ENV['PATH']
+      end
+
       Dir.chdir('ext') do
         sh "make distclean" rescue nil
         sh "#{rubyx} extconf.rb"
@@ -87,7 +96,11 @@ namespace 'gem' do
         elsif key.to_s == 'ruby19'
           cp 'api.so', '../lib/win32/ruby19/win32/api.so'
         else
-          cp 'api.so', '../lib/win32/ruby2/win32/api.so'
+          if CONFIG['arch'] =~ /x64/i
+            cp 'api.so', '../lib/win32/ruby2_64/win32/api.so'
+          else
+            cp 'api.so', '../lib/win32/ruby2_32/win32/api.so'
+          end
         end
       end
     }
@@ -99,7 +112,11 @@ namespace 'gem' do
       fh.puts "elsif RUBY_VERSION.to_f < 2.0"
       fh.puts "  require File.join(File.dirname(__FILE__), 'ruby19/win32/api')"
       fh.puts "else"
-      fh.puts "  require File.join(File.dirname(__FILE__), 'ruby2/win32/api')"
+      fh.puts "  if CONFIG['arch'] =~ /x64/i"
+      fh.puts "    require File.join(File.dirname(__FILE__), 'ruby2_64/win32/api')"
+      fh.puts "  else"
+      fh.puts "    require File.join(File.dirname(__FILE__), 'ruby2_32/win32/api')"
+      fh.puts "  end"
       fh.puts "end"
     }
 
