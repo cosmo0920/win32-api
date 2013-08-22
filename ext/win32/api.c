@@ -256,8 +256,8 @@ static VALUE api_init(int argc, VALUE* argv, VALUE self)
    }
 
    // Set an arbitrary limit of 20 parameters
-   if(20 < RARRAY_LEN(v_proto))
-      rb_raise(rb_eArgError, "too many parameters: %li", RARRAY_LEN(v_proto));
+   if(RARRAY_LEN(v_proto) > 20)
+      rb_raise(rb_eArgError, "too many parameters: %ld", RARRAY_LEN(v_proto));
 
    // Set the default dll to 'kernel32'
    if(NIL_P(v_dll))
@@ -763,7 +763,7 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
       }
       else{
          rb_raise(rb_eArgError,
-            "wrong number of parameters: expected %li, got %li",
+            "wrong number of parameters: expected %ld, got %ld",
             RARRAY_LEN(v_proto), RARRAY_LEN(v_args)
          );
       }
