@@ -75,8 +75,11 @@
 
 = Multiple Binaries
   As of win32-api 1.4.8 a binary gem is shipped that contains binaries for
-  both Ruby 1.8 and Ruby 1.9. The file under lib/win32 dynamically requires
-  the correct binary based on your version of Ruby.
+  both Ruby 1.8, Ruby 1.9, and 2.x. For Ruby 2.x, both 32 and 64 bit binaries
+  are included.
+
+  The file under lib/win32 dynamically requires the correct binary based on
+  your version of Ruby.
 
 = Documentation
   The source file contains inline RDoc documentation. If you installed
@@ -92,10 +95,16 @@
   Possible callback issues when dealing with multi-threaded applications.
 
   Please submit any bug reports to the project page at
-  http://www.rubyforge.org/projects/win32utils.
+  https://github.com/djberg96/win32-api
+
+= Future Plans
+  I really don't have future plans for this library since I believe FFI to
+  be the preferred C interface going forward. This library will still be
+  maintained, at least until all of the win32utils libraries have been
+  converted to use either FFI or an OLE approach.
 
 = Copyright
-  (C) 2003-2011 Daniel J. Berger
+  (C) 2003-2013 Daniel J. Berger
   All Rights Reserved
 
 = License
