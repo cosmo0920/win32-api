@@ -76,7 +76,7 @@
 = Multiple Binaries
   As of win32-api 1.4.8 a binary gem is shipped that contains binaries for
   both Ruby 1.8, Ruby 1.9, and 2.x. For Ruby 2.x, both 32 and 64 bit binaries
-  are included.
+  are included as of release 1.5.0.
 
   The file under lib/win32 dynamically requires the correct binary based on
   your version of Ruby.
@@ -96,6 +96,12 @@
 
   Please submit any bug reports to the project page at
   https://github.com/djberg96/win32-api
+
+== Contributions
+  Although this library is free, please consider having your company
+  setup a gittip if used by your company professionally.
+
+  http://www.gittip.com/djberg96/
 
 = Future Plans
   I really don't have future plans for this library since I believe FFI to
