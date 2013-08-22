@@ -528,7 +528,7 @@ static VALUE func_init(int argc, VALUE* argv, VALUE self){
 }
 
 typedef struct {
-   DWORD params[20];
+   uintptr_t params[20];
 } CALLPARAM;
 
 
@@ -558,7 +558,7 @@ DWORD CallbackFunction(CALLPARAM param, VALUE callback)
           break;
         case 'P':
           if(param.params[i])
-            argv[i] = rb_str_new2((TCHAR *)&param.params[i]);
+            argv[i] = rb_str_new2((char *)param.params[i]);
           break;
         case 'I':
           argv[i] = INT2NUM(param.params[i]);
@@ -746,7 +746,7 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
    int len;
 
    struct{
-      unsigned long params[20];
+      uintptr_t params[20];
    } param;
 
    Data_Get_Struct(self, Win32API, ptr);
@@ -813,8 +813,14 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
    }
 
    /* Call the function, get the return value */
+#ifdef _WIN64    
+   return_value = ptr->function(param.params[0],param.params[1],param.params[2],param.params[3],param.params[4],
+                                param.params[5],param.params[6],param.params[7],param.params[8],param.params[9],
+                                param.params[10],param.params[11],param.params[12],param.params[13],param.params[14],
+                                param.params[15],param.params[16],param.params[17],param.params[18],param.params[19]);
+#else    
    return_value = ptr->function(param);
-
+#endif
 
    /* Return the appropriate type based on the return type specified
     * in the constructor.
