@@ -1,5 +1,6 @@
 == 1.5.0 - 22-Aug-2013
 * Fixes for Ruby x64.
+* There are now separate 32 and 64 bit binaries packaged for Ruby 2.x.
 * Updates to the Rakefile for the gem:binary task.
 * Some README updates, including Future Plans.
 
