@@ -1,3 +1,6 @@
+== 1.5.0 - 22-Aug-2013
+* Fixes for Ruby x64.
+
 == 1.4.9 - 14-Jul-2013
 * Added a binary for Ruby 2.0.
 * Add devkit to Rakefile for the gem:binary task.
