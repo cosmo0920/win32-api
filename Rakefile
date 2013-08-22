@@ -121,7 +121,7 @@ namespace 'gem' do
     }
 
     spec = eval(IO.read('win32-api.gemspec'))
-    spec.platform = Gem::Platform::CURRENT
+    spec.platform = Gem::Platform.new(['universal', 'mingw32'])
     spec.extensions = nil
     spec.files = spec.files.reject{ |f| f.include?('ext') }
 
