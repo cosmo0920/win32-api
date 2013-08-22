@@ -96,7 +96,7 @@ namespace 'gem' do
         elsif key.to_s == 'ruby19'
           cp 'api.so', '../lib/win32/ruby19/win32/api.so'
         else
-          if CONFIG['arch'] =~ /x64/i
+          if `"#{rubyx}" -v` =~ /x64/i
             cp 'api.so', '../lib/win32/ruby2_64/win32/api.so'
           else
             cp 'api.so', '../lib/win32/ruby2_32/win32/api.so'
