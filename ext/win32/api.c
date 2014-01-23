@@ -66,6 +66,7 @@ static void api_free(Win32API* ptr){
 
 static VALUE api_allocate(VALUE klass){
    Win32API* ptr = malloc(sizeof(Win32API));
+   memset(ptr, 0, sizeof(*ptr));
    return Data_Wrap_Struct(klass, 0, api_free, ptr);
 }
 
