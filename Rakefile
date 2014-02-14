@@ -66,9 +66,9 @@ namespace 'gem' do
     # These are just what's on my system at the moment. Adjust as needed.
     args.with_defaults(
       :ruby18   => "c:/ruby187/bin/ruby",
-      :ruby19   => "c:/ruby/bin/ruby",
+      :ruby19   => "c:/ruby193/bin/ruby",
       :ruby2_32 => "c:/ruby2/bin/ruby",
-      :ruby2_64 => "c:/ruby200-x64/bin/ruby"
+      :ruby2_64 => "c:/ruby264/bin/ruby"
     )
 
     Rake::Task[:clobber].invoke
