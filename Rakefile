@@ -60,15 +60,17 @@ namespace 'gem' do
   end
 
   desc 'Build a binary gem'
-  task :binary, :ruby18, :ruby19, :ruby2_32, :ruby2_64 do |task, args|
+  task :binary, :ruby18, :ruby19, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64 do |task, args|
     require 'devkit'
 
     # These are just what's on my system at the moment. Adjust as needed.
     args.with_defaults(
-      :ruby18   => "c:/ruby187/bin/ruby",
-      :ruby19   => "c:/ruby193/bin/ruby",
-      :ruby2_32 => "c:/ruby2/bin/ruby",
-      :ruby2_64 => "c:/ruby264/bin/ruby"
+      :ruby18    => "c:/ruby187/bin/ruby",
+      :ruby19    => "c:/ruby193/bin/ruby",
+      :ruby2_32  => "c:/ruby2/bin/ruby",
+      :ruby2_64  => "c:/ruby264/bin/ruby",
+      :ruby21_32 => "c:/ruby21/bin/ruby",
+      :ruby21_64 => "c:/ruby21-x64/bin/ruby"
     )
 
     Rake::Task[:clobber].invoke
@@ -77,6 +79,8 @@ namespace 'gem' do
     mkdir_p 'lib/win32/ruby19/win32'
     mkdir_p 'lib/win32/ruby2_32/win32'
     mkdir_p 'lib/win32/ruby2_64/win32'
+    mkdir_p 'lib/win32/ruby21_32/win32'
+    mkdir_p 'lib/win32/ruby21_64/win32'
 
     args.each{ |key, rubyx|
       # Adjust devkit paths as needed.
@@ -90,37 +94,33 @@ namespace 'gem' do
         sh "make distclean" rescue nil
         sh "#{rubyx} extconf.rb"
         sh "make"
-
-        if key.to_s == 'ruby18'
-          cp 'api.so', '../lib/win32/ruby18/win32/api.so'
-        elsif key.to_s == 'ruby19'
-          cp 'api.so', '../lib/win32/ruby19/win32/api.so'
-        else
-          if `"#{rubyx}" -v` =~ /x64/i
-            cp 'api.so', '../lib/win32/ruby2_64/win32/api.so'
-          else
-            cp 'api.so', '../lib/win32/ruby2_32/win32/api.so'
-          end
-        end
+        cp 'api.so', "../lib/win32/#{key}/win32/api.so"
       end
     }
 
-    # Create a stub file that automatically require's the correct binary
-    File.open('lib/win32/api.rb', 'w'){ |fh|
-      fh.puts "if RUBY_VERSION.to_f < 1.9"
-      fh.puts "  require File.join(File.dirname(__FILE__), 'ruby18/win32/api')"
-      fh.puts "elsif RUBY_VERSION.to_f < 2.0"
-      fh.puts "  require File.join(File.dirname(__FILE__), 'ruby19/win32/api')"
-      fh.puts "else"
-      fh.puts "  require 'rbconfig'"
-      fh.puts "  if RbConfig::CONFIG['arch'] =~ /x64/i"
-      fh.puts "    require File.join(File.dirname(__FILE__), 'ruby2_64/win32/api')"
-      fh.puts "  else"
-      fh.puts "    require File.join(File.dirname(__FILE__), 'ruby2_32/win32/api')"
-      fh.puts "  end"
-      fh.puts "end"
-    }
+text = <<HERE
+case 
+  when RUBY_VERSION =~ /1\\.8/
+    require File.join(File.dirname(__FILE__), 'ruby18/win32/api')
+  when RUBY_VERSION =~ /1\\.9/
+    require File.join(File.dirname(__FILE__), 'ruby19/win32/api')
+  when RUBY_VERSION =~ /2\\.0/
+    if RbConfig::CONFIG['arch'] =~ /x64/i
+      require File.join(File.dirname(__FILE__), 'ruby2_64/win32/api')
+    else
+      require File.join(File.dirname(__FILE__), 'ruby2_32/win32/api')
+    end
+  when RUBY_VERSION =~ /2\\.1/
+    if RbConfig::CONFIG['arch'] =~ /x64/i
+      require File.join(File.dirname(__FILE__), 'ruby21_64/win32/api')
+    else
+      require File.join(File.dirname(__FILE__), 'ruby21_32/win32/api')
+    end
+end
+HERE
 
+    File.open('lib/win32/api.rb', 'w'){ |fh| fh.puts text }
+      
     spec = eval(IO.read('win32-api.gemspec'))
     spec.platform = Gem::Platform.new(['universal', 'mingw32'])
     spec.extensions = nil
@@ -129,6 +129,7 @@ namespace 'gem' do
     if Gem::VERSION.to_f < 2.0
       Gem::Builder.new(spec).build
     else
+      require 'rubygems/package'
       Gem::Package.build(spec)
     end
   end
@@ -136,7 +137,7 @@ namespace 'gem' do
   desc 'Install the gem'
   task :install => [:create] do
     file = Dir["*.gem"].first
-    sh "gem install #{file}"
+    sh "gem install -l #{file}"
   end
 end
 
