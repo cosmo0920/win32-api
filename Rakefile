@@ -75,13 +75,6 @@ namespace 'gem' do
 
     Rake::Task[:clobber].invoke
 
-    mkdir_p 'lib/win32/ruby18/win32'
-    mkdir_p 'lib/win32/ruby19/win32'
-    mkdir_p 'lib/win32/ruby2_32/win32'
-    mkdir_p 'lib/win32/ruby2_64/win32'
-    mkdir_p 'lib/win32/ruby21_32/win32'
-    mkdir_p 'lib/win32/ruby21_64/win32'
-
     args.each{ |key, rubyx|
       # Adjust devkit paths as needed.
       if `"#{rubyx}" -v` =~ /x64/i
@@ -89,6 +82,8 @@ namespace 'gem' do
       else
         ENV['PATH'] = "C:/Devkit/bin;C:/Devkit/mingw/bin;" + ENV['PATH']
       end
+
+      mkdir_p "lib/win32/#{key}/win32"
 
       Dir.chdir('ext') do
         sh "make distclean" rescue nil
