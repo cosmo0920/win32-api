@@ -1,3 +1,7 @@
+== 1.5.2 - 11-Oct-2014
+* Now includes binaries for Ruby 2.1 for both 32 and 64 bit versions.
+* Some refactoring of the gem:binary task, mostly for me.
+
 == 1.5.1 - 14-Feb-2014
 * Fixed a potential zero-initialization issue. Thanks go to Peter Huene
   for the spot and the patch.
