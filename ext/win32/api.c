@@ -834,14 +834,131 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
    }
 
    /* Call the function, get the return value */
-#ifdef _WIN64    
-   return_value = ptr->function(param.params[0],param.params[1],param.params[2],param.params[3],param.params[4],
-                                param.params[5],param.params[6],param.params[7],param.params[8],param.params[9],
-                                param.params[10],param.params[11],param.params[12],param.params[13],param.params[14],
-                                param.params[15],param.params[16],param.params[17],param.params[18],param.params[19]);
-#else    
-   return_value = ptr->function(param);
-#endif
+   if(strcmp(StringValuePtr(RARRAY_PTR(v_proto)[0]), "V") == 0 && len == 1)
+   {
+        return_value = ptr->function();
+   }
+   else
+   {   
+        switch(len)
+        {
+        case 0:
+            return_value = ptr->function();
+            break;
+        case 1:
+            return_value = ptr->function(param.params[0]);
+            break;
+        case 2:
+            return_value = ptr->function(param.params[0], param.params[1]);
+            break;
+        case 3:
+            return_value = ptr->function(param.params[0], param.params[1], 
+                param.params[2]);
+            break;
+        case 4:
+            return_value = ptr->function(param.params[0], param.params[1], 
+                param.params[2], param.params[3]);
+            break;
+        case 5:
+            return_value = ptr->function(param.params[0], param.params[1], 
+                param.params[2], param.params[3], param.params[4]);
+            break;
+        case 6:
+            return_value = ptr->function(param.params[0], param.params[1], 
+                param.params[2], param.params[3], param.params[4], param.params[5]);
+            break;
+        case 7:
+            return_value = ptr->function(param.params[0], param.params[1],
+                param.params[2], param.params[3], param.params[4], param.params[5], 
+                param.params[6]);
+            break;
+        case 8:
+            return_value = ptr->function(param.params[0], param.params[1], 
+                param.params[2], param.params[3], param.params[4], param.params[5],
+                param.params[6], param.params[7]);
+            break;
+        case 9:
+            return_value = ptr->function(param.params[0], param.params[1], 
+                param.params[2], param.params[3], param.params[4], param.params[5],
+                param.params[6], param.params[7], param.params[8]);
+            break;
+        case 10:
+            return_value = ptr->function(param.params[0], param.params[1], 
+                param.params[2], param.params[3], param.params[4], param.params[5], 
+                param.params[6], param.params[7], param.params[8], param.params[9]);
+            break;
+        case 11:
+            return_value = ptr->function(param.params[0], param.params[1], 
+                param.params[2], param.params[3], param.params[4], param.params[5], 
+                param.params[6], param.params[7], param.params[8], param.params[9],
+                param.params[10]);
+            break;
+        case 12:
+            return_value = ptr->function(param.params[0], param.params[1], 
+                param.params[2], param.params[3], param.params[4], param.params[5],
+                param.params[6], param.params[7], param.params[8], param.params[9],
+                param.params[10], param.params[11]);
+            break;
+        case 13:
+            return_value = ptr->function(param.params[0], param.params[1],
+                param.params[2], param.params[3], param.params[4], param.params[5],
+                param.params[6], param.params[7], param.params[8], param.params[9],
+                param.params[10], param.params[11], param.params[12]);
+            break;
+        case 14:
+            return_value = ptr->function(param.params[0], param.params[1],
+                param.params[2], param.params[3], param.params[4], param.params[5],
+                param.params[6], param.params[7], param.params[8], param.params[9],
+                param.params[10], param.params[11], param.params[12], param.params[13]);
+            break;
+        case 15:
+            return_value = ptr->function(param.params[0], param.params[1],
+                param.params[2], param.params[3], param.params[4], param.params[5],
+                param.params[6], param.params[7], param.params[8], param.params[9],
+                param.params[10], param.params[11], param.params[12], param.params[13],
+                param.params[14]);
+            break;
+        case 16:
+            return_value = ptr->function(param.params[0], param.params[1],
+                param.params[2], param.params[3], param.params[4], param.params[5],
+                param.params[6], param.params[7], param.params[8], param.params[9],
+                param.params[10], param.params[11], param.params[12], param.params[13],
+                param.params[14], param.params[15]);
+            break;
+        case 17:
+            return_value = ptr->function(param.params[0], param.params[1],
+                param.params[2], param.params[3], param.params[4], param.params[5],
+                param.params[6], param.params[7], param.params[8], param.params[9],
+                param.params[10], param.params[11], param.params[12], param.params[13],
+                param.params[14], param.params[15], param.params[16]);
+            break;
+        case 18:
+            return_value = ptr->function(param.params[0], param.params[1],
+                param.params[2], param.params[3], param.params[4], param.params[5],
+                param.params[6], param.params[7], param.params[8], param.params[9],
+                param.params[10], param.params[11], param.params[12], param.params[13],
+                param.params[14], param.params[15], param.params[16], param.params[17]);
+            break;
+        case 19:
+            return_value = ptr->function(param.params[0], param.params[1],
+                param.params[2], param.params[3], param.params[4], param.params[5],
+                param.params[6], param.params[7], param.params[8], param.params[9],
+                param.params[10], param.params[11], param.params[12], param.params[13],
+                param.params[14], param.params[15], param.params[16], param.params[17],
+                param.params[18]);
+            break;
+        case 20:
+            return_value = ptr->function(param.params[0], param.params[1],
+                param.params[2], param.params[3], param.params[4], param.params[5],
+                param.params[6], param.params[7], param.params[8], param.params[9],
+                param.params[10], param.params[11], param.params[12], param.params[13],
+                param.params[14], param.params[15], param.params[16], param.params[17],
+                param.params[18], param.params[19]);
+            break;
+        default:
+            rb_raise(rb_eArgError,"number of parameters exceed 20!");
+        }
+   }
 
    /* Return the appropriate type based on the return type specified
     * in the constructor.
