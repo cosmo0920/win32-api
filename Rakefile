@@ -30,7 +30,7 @@ task :build_manifest do
   if version && version.to_i >= 80
     unless File.exist?(File.join(CONFIG['bindir'], 'ruby.exe.manifest'))
       Dir.chdir(CONFIG['bindir']) do
-        sh "mt -inputresource:ruby.exe;2 -out:ruby.exe.manifest"
+        sh "mt -nologo -inputresource:ruby.exe;2 -out:ruby.exe.manifest"
       end
     end
   end
@@ -38,7 +38,7 @@ end
 
 desc "Build the win32-api library"
 task :build => [:clean, :build_manifest] do
-  require 'devkit'
+  require 'devkit' if RbConfig::CONFIG['host_os'] =~ /mingw|cygwn/i
   Dir.chdir('ext') do
     ruby "extconf.rb"
     sh make
