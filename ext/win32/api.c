@@ -822,7 +822,6 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
                break;
             case _T_CALLBACK:
                ActiveCallback = v_arg;
-               v_proto = rb_iv_get(ActiveCallback, "@prototype");
                param.params[i] = (LPARAM)NUM2SIZET(rb_iv_get(ActiveCallback, "@address"));;
                break;
             case _T_STRING:
