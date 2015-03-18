@@ -1,3 +1,8 @@
+== 1.5.3 - ???
+* Fixed potential stack corruption caused by callbacks. Thanks go to
+  rickerliang for the spot and patch.
+* Some minor updates and additions to the Rakefile.
+
 == 1.5.2 - 11-Oct-2014
 * Now includes binaries for Ruby 2.1 for both 32 and 64 bit versions.
 * Some refactoring of the gem:binary task, mostly for me.
