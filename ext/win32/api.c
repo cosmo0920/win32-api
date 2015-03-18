@@ -37,7 +37,7 @@
 
 
 #define MAX_BUF 1024
-#define WINDOWS_API_VERSION "1.5.2"
+#define WINDOWS_API_VERSION "1.5.3"
 
 #define _T_VOID     0
 #define _T_LONG     1
@@ -1087,6 +1087,6 @@ void Init_api(){
 
    /* Constants */
 
-   /* 1.5.2: The version of the win32-api library */
+   /* 1.5.3: The version of the win32-api library */
    rb_define_const(cAPI, "VERSION", rb_str_new2(WINDOWS_API_VERSION));
 }
