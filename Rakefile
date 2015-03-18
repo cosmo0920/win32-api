@@ -60,7 +60,7 @@ namespace 'gem' do
   end
 
   desc 'Build a binary gem'
-  task :binary, :ruby18, :ruby19, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64 do |task, args|
+  task :binary, :ruby18, :ruby19, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64 do |task, args|
     require 'devkit'
 
     # These are just what's on my system at the moment. Adjust as needed.
@@ -70,7 +70,9 @@ namespace 'gem' do
       :ruby2_32  => "c:/ruby2/bin/ruby",
       :ruby2_64  => "c:/ruby264/bin/ruby",
       :ruby21_32 => "c:/ruby21/bin/ruby",
-      :ruby21_64 => "c:/ruby21-x64/bin/ruby"
+      :ruby21_64 => "c:/ruby21-x64/bin/ruby",
+      :ruby22_32 => "c:/ruby22/bin/ruby",
+      :ruby22_64 => "c:/ruby22-x64/bin/ruby"
     )
 
     Rake::Task[:clobber].invoke
@@ -110,6 +112,12 @@ case
       require File.join(File.dirname(__FILE__), 'ruby21_64/win32/api')
     else
       require File.join(File.dirname(__FILE__), 'ruby21_32/win32/api')
+    end
+  when RUBY_VERSION =~ /2\\.2/
+    if RbConfig::CONFIG['arch'] =~ /x64/i
+      require File.join(File.dirname(__FILE__), 'ruby22_64/win32/api')
+    else
+      require File.join(File.dirname(__FILE__), 'ruby22_32/win32/api')
     end
 end
 HERE
