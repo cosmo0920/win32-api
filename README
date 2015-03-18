@@ -49,6 +49,9 @@
     use capital letters.
 
 = Developer's Notes
+  [NOTE: Some of the information below is now out of date, but explains my
+  motivation at the time the project was originally created.]
+
   The current Win32API library that ships with the standard library has been
   slated for removal from Ruby 2.0 and it will not receive any updates in the
   Ruby 1.8.x branch. I have far too many libraries invested in it to let it
@@ -104,13 +107,20 @@
   http://www.gittip.com/djberg96/
 
 = Future Plans
-  I really don't have future plans for this library since I believe FFI to
-  be the preferred C interface going forward. This library will still be
-  maintained, at least until all of the win32utils libraries have been
-  converted to use either FFI or an OLE approach.
+  I really don't have future plans for this library since you should use FFI
+  as your preferred C interface going forward. All of my own projects have
+  since been converted to either use FFI or an analogous OLE interface.
+
+  I will continue to maintain this library as long as there are folks out
+  there who are still using it, but I strongly encourage you to convert
+  your projects to FFI when possible.
+
+= Maintainer Wanted!
+  Since I no longer use this project, I would like to turn it over to
+  someone who has the skill, time and desire to keep it going.
 
 = Copyright
-  (C) 2003-2014 Daniel J. Berger
+  (C) 2003-2015 Daniel J. Berger
   All Rights Reserved
 
 = License
