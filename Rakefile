@@ -61,7 +61,7 @@ namespace 'gem' do
 
   desc 'Build a binary gem'
   task :binary, :ruby18, :ruby19, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64 do |task, args|
-    require 'devkit'
+    require 'devkit' if RbConfig::CONFIG['host_os'] =~ /mingw|cygwn/i
 
     # These are just what's on my system at the moment. Adjust as needed.
     args.with_defaults(
@@ -96,28 +96,38 @@ namespace 'gem' do
     }
 
 text = <<HERE
-case 
-  when RUBY_VERSION =~ /1\\.8/
-    require File.join(File.dirname(__FILE__), 'ruby18/win32/api')
-  when RUBY_VERSION =~ /1\\.9/
-    require File.join(File.dirname(__FILE__), 'ruby19/win32/api')
-  when RUBY_VERSION =~ /2\\.0/
-    if RbConfig::CONFIG['arch'] =~ /x64/i
-      require File.join(File.dirname(__FILE__), 'ruby2_64/win32/api')
+require 'rbconfig'
+
+case RbConfig::CONFIG['MAJOR']
+  when '1'
+    if RbConfig::CONFIG['MINOR'] == '8'
+      require File.join(File.dirname(__FILE__), 'ruby18/win32/api')
     else
-      require File.join(File.dirname(__FILE__), 'ruby2_32/win32/api')
+      require File.join(File.dirname(__FILE__), 'ruby19/win32/api')
     end
-  when RUBY_VERSION =~ /2\\.1/
-    if RbConfig::CONFIG['arch'] =~ /x64/i
-      require File.join(File.dirname(__FILE__), 'ruby21_64/win32/api')
-    else
-      require File.join(File.dirname(__FILE__), 'ruby21_32/win32/api')
+  when '2'
+    if RbConfig::CONFIG['MINOR'] == '0'
+      if RbConfig::CONFIG['arch'] =~ /x64/i
+        require File.join(File.dirname(__FILE__), 'ruby2_64/win32/api')
+      else
+        require File.join(File.dirname(__FILE__), 'ruby2_32/win32/api')
+      end
     end
-  when RUBY_VERSION =~ /2\\.2/
-    if RbConfig::CONFIG['arch'] =~ /x64/i
-      require File.join(File.dirname(__FILE__), 'ruby22_64/win32/api')
-    else
-      require File.join(File.dirname(__FILE__), 'ruby22_32/win32/api')
+
+    if RbConfig::CONFIG['MINOR'] == '1'
+      if RbConfig::CONFIG['arch'] =~ /x64/i
+        require File.join(File.dirname(__FILE__), 'ruby21_64/win32/api')
+      else
+        require File.join(File.dirname(__FILE__), 'ruby21_32/win32/api')
+      end
+    end
+
+    if RbConfig::CONFIG['MINOR'] == '2'
+      if RbConfig::CONFIG['arch'] =~ /x64/i
+        require File.join(File.dirname(__FILE__), 'ruby22_64/win32/api')
+      else
+        require File.join(File.dirname(__FILE__), 'ruby22_32/win32/api')
+      end
     end
 end
 HERE
