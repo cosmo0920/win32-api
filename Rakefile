@@ -60,13 +60,11 @@ namespace 'gem' do
   end
 
   desc 'Build a binary gem'
-  task :binary, :ruby18, :ruby19, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64, :ruby23_32, :ruby23_64 do |task, args|
-    require 'devkit' if RbConfig::CONFIG['host_os'] =~ /mingw|cygwn/i
+  task :binary, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64, :ruby23_32, :ruby23_64 do |task, args|
+    # require 'devkit' if RbConfig::CONFIG['host_os'] =~ /mingw|cygwn/i
 
     # These are just what's on my system at the moment. Adjust as needed.
     args.with_defaults(
-      :ruby18    => "c:/ruby187/bin/ruby",
-      :ruby19    => "c:/ruby193/bin/ruby",
       :ruby2_32  => "c:/ruby2/bin/ruby",
       :ruby2_64  => "c:/ruby264/bin/ruby",
       :ruby21_32 => "c:/ruby21/bin/ruby",
