@@ -60,7 +60,7 @@ namespace 'gem' do
   end
 
   desc 'Build a binary gem'
-  task :binary, :ruby18, :ruby19, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64 do |task, args|
+  task :binary, :ruby18, :ruby19, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64, :ruby23_32, :ruby23_64 do |task, args|
     require 'devkit' if RbConfig::CONFIG['host_os'] =~ /mingw|cygwn/i
 
     # These are just what's on my system at the moment. Adjust as needed.
@@ -72,7 +72,9 @@ namespace 'gem' do
       :ruby21_32 => "c:/ruby21/bin/ruby",
       :ruby21_64 => "c:/ruby21-x64/bin/ruby",
       :ruby22_32 => "c:/ruby22/bin/ruby",
-      :ruby22_64 => "c:/ruby22-x64/bin/ruby"
+      :ruby22_64 => "c:/ruby22-x64/bin/ruby",
+      :ruby23_32 => "c:/ruby23/bin/ruby",
+      :ruby23_64 => "c:/ruby23-x64/bin/ruby"
     )
 
     Rake::Task[:clobber].invoke
@@ -129,11 +131,19 @@ case RbConfig::CONFIG['MAJOR']
         require File.join(File.dirname(__FILE__), 'ruby22_32/win32/api')
       end
     end
+
+    if RbConfig::CONFIG['MINOR'] == '3'
+      if RbConfig::CONFIG['arch'] =~ /x64/i
+        require File.join(File.dirname(__FILE__), 'ruby23_64/win32/api')
+      else
+        require File.join(File.dirname(__FILE__), 'ruby23_32/win32/api')
+      end
+    end
 end
 HERE
 
     File.open('lib/win32/api.rb', 'w'){ |fh| fh.puts text }
-      
+
     spec = eval(IO.read('win32-api.gemspec'))
     spec.platform = Gem::Platform.new(['universal', 'mingw32'])
     spec.extensions = nil
