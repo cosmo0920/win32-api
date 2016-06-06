@@ -97,8 +97,8 @@ namespace 'gem' do
 
 text = <<HERE
 require 'rbconfig'
-
-case RbConfig::CONFIG['MAJOR']
+begin
+  case RbConfig::CONFIG['MAJOR']
   when '2'
     if RbConfig::CONFIG['MINOR'] == '0'
       if RbConfig::CONFIG['arch'] =~ /x64/i
@@ -131,6 +131,10 @@ case RbConfig::CONFIG['MAJOR']
         require File.join(File.dirname(__FILE__), 'ruby23_32/win32/api')
       end
     end
+
+  end
+rescue LoadError
+  require File.join(File.dirname(__FILE__), '../../ext/api')
 end
 HERE
 
