@@ -62,8 +62,8 @@ namespace 'gem' do
   task :binary, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64, :ruby23_32, :ruby23_64 do |task, args|
     # These are just what's on my system at the moment. Adjust as needed.
     args.with_defaults(
-      :ruby2_32  => "c:/ruby2/bin/ruby",
-      :ruby2_64  => "c:/ruby264/bin/ruby",
+      :ruby2_32  => "c:/ruby200/bin/ruby",
+      :ruby2_64  => "c:/ruby200-x64/bin/ruby",
       :ruby21_32 => "c:/ruby21/bin/ruby",
       :ruby21_64 => "c:/ruby21-x64/bin/ruby",
       :ruby22_32 => "c:/ruby22/bin/ruby",
