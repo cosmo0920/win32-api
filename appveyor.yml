@@ -8,11 +8,11 @@ install:
   - "%devkit32%\\devkitvars.bat"
   - ruby --version
   - gem --version
-  - gem install test-unit --version '3.1.9'
+  - bundle install
 build: off
 test_script:
-  - rake gem:binary
-  - rake test:all
+  - bundle exec rake gem:binary
+  - bundle exec rake test:all
 
 environment:
   matrix:
