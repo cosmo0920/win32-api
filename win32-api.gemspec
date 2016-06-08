@@ -3,7 +3,7 @@ require 'rubygems'
 Gem::Specification.new do |spec|
   spec.name       = 'win32-api'
   spec.version    = '1.5.3'
-  spec.authors    = ['Daniel J. Berger', 'Park Heesob']
+  spec.authors    = ['Daniel J. Berger', 'Park Heesob', 'Hiroshi Hatake']
   spec.license    = 'Artistic 2.0'
   spec.email      = 'djberg96@gmail.com'
   spec.homepage   = 'http://github.com/djberg96/win32-api'
