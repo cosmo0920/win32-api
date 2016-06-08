@@ -1,3 +1,8 @@
+== 1.6.0 - ??
+* Now includes binaries for Ruby 2.3 for both 32 and 64 bit versions.
+* Now drop support Ruby 1.9 or earlier.
+* Some README and gemspec updates, including new maintainer information.
+
 == 1.5.3 - 18-Mar-2015
 * Now includes binaries for Ruby 2.2 for both 32 and 64 bit versions.
 * Fixed potential stack corruption caused by callbacks. Thanks go to
