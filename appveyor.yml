@@ -1,0 +1,42 @@
+version: '{build}'
+
+platform: x64
+
+install:
+  - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
+  - "%devkit64%\\devkitvars.bat"
+  - "%devkit32%\\devkitvars.bat"
+  - ruby --version
+  - gem --version
+  - bundle install
+build: off
+test_script:
+  - bundle exec rake gem:binary
+  - bundle exec rake test:all
+
+environment:
+  matrix:
+    - ruby_version: "23-x64"
+      devkit64: C:\Ruby23-x64\DevKit
+      devkit32: C:\Ruby23\DevKit
+    - ruby_version: "23"
+      devkit64: C:\Ruby23-x64\DevKit
+      devkit32: C:\Ruby23\DevKit
+    - ruby_version: "22-x64"
+      devkit64: C:\Ruby23-x64\DevKit
+      devkit32: C:\Ruby23\DevKit
+    - ruby_version: "22"
+      devkit64: C:\Ruby23-x64\DevKit
+      devkit32: C:\Ruby23\DevKit
+    - ruby_version: "21-x64"
+      devkit64: C:\Ruby23-x64\DevKit
+      devkit32: C:\Ruby23\DevKit
+    - ruby_version: "21"
+      devkit64: C:\Ruby23-x64\DevKit
+      devkit32: C:\Ruby23\DevKit
+    - ruby_version: "200-x64"
+      devkit64: C:\Ruby23-x64\DevKit
+      devkit32: C:\Ruby23\DevKit
+    - ruby_version: "200"
+      devkit64: C:\Ruby23-x64\DevKit
+      devkit32: C:\Ruby23\DevKit
