@@ -1,4 +1,4 @@
-== 1.6.0 - ??
+== 1.6.0 - 09-Jun-2016
 * Now includes binaries for Ruby 2.3 for both 32 and 64 bit versions.
 * Now drop support Ruby 1.9 or earlier.
 * Some README and gemspec updates, including new maintainer information.
