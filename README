@@ -115,12 +115,9 @@
   there who are still using it, but I strongly encourage you to convert
   your projects to FFI when possible.
 
-= Maintainer Wanted!
-  Since I no longer use this project, I would like to turn it over to
-  someone who has the skill, time and desire to keep it going.
-
 = Copyright
   (C) 2003-2015 Daniel J. Berger
+  (C) 2016 Hiroshi Hatake
   All Rights Reserved
 
 = License
@@ -129,3 +126,4 @@
 = Authors
   Daniel J. Berger
   Park Heesob
+  Hiroshi Hatake
