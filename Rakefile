@@ -59,7 +59,7 @@ namespace 'gem' do
   end
 
   desc 'Build a binary gem'
-  task :binary, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64, :ruby23_32, :ruby23_64 do |task, args|
+  task :binary, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64, :ruby23_32, :ruby23_64, :ruby24_32, :ruby24_64 do |task, args|
     # These are just what's on my system at the moment. Adjust as needed.
     args.with_defaults(
       :ruby2_32  => "c:/ruby200/bin/ruby",
@@ -69,7 +69,9 @@ namespace 'gem' do
       :ruby22_32 => "c:/ruby22/bin/ruby",
       :ruby22_64 => "c:/ruby22-x64/bin/ruby",
       :ruby23_32 => "c:/ruby23/bin/ruby",
-      :ruby23_64 => "c:/ruby23-x64/bin/ruby"
+      :ruby23_64 => "c:/ruby23-x64/bin/ruby",
+      :ruby24_32 => "c:/ruby24/bin/ruby",
+      :ruby24_64 => "c:/ruby24-x64/bin/ruby"
     )
 
     Rake::Task[:clobber].invoke
@@ -126,6 +128,14 @@ begin
         require File.join(File.dirname(__FILE__), 'ruby23_64/win32/api')
       else
         require File.join(File.dirname(__FILE__), 'ruby23_32/win32/api')
+      end
+    end
+
+    if RbConfig::CONFIG['MINOR'] == '4'
+      if RbConfig::CONFIG['arch'] =~ /x64/i
+        require File.join(File.dirname(__FILE__), 'ruby24_64/win32/api')
+      else
+        require File.join(File.dirname(__FILE__), 'ruby24_32/win32/api')
       end
     end
 
