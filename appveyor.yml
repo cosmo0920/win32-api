@@ -6,6 +6,12 @@ install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
   - "%devkit64%\\devkitvars.bat"
   - "%devkit32%\\devkitvars.bat"
+  # Update pacman database.
+  - c:/msys64/usr/bin/bash -lc "pacman -Sy --noconfirm"
+  # for 32 bit ext library.
+  - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm --needed base-devel mingw-w64-i686-toolchain"
+  # for 64 bit ext library.
+  - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm --needed base-devel mingw-w64-x86_64-toolchain"
   - ruby --version
   - gem --version
   - bundle install
