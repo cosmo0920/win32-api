@@ -89,7 +89,7 @@ namespace 'gem' do
           ENV['PATH'] = "C:/Devkit/bin;C:/Devkit/mingw/bin;" + ENV['PATH']
         end
       elsif key[1][:msys] == :msys2
-        ENV['PATH'] = "C:/msys2/usr/bin;" + ENV['PATH']
+        ENV['PATH'] = "C:/msys64/usr/bin;" + ENV['PATH']
       end
       mkdir_p "lib/win32/#{key.first}/win32"
 
