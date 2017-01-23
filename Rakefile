@@ -62,38 +62,46 @@ namespace 'gem' do
   task :binary, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64, :ruby23_32, :ruby23_64, :ruby24_32, :ruby24_64 do |task, args|
     # These are just what's on my system at the moment. Adjust as needed.
     args.with_defaults(
-      :ruby2_32  => "c:/ruby200/bin/ruby",
-      :ruby2_64  => "c:/ruby200-x64/bin/ruby",
-      :ruby21_32 => "c:/ruby21/bin/ruby",
-      :ruby21_64 => "c:/ruby21-x64/bin/ruby",
-      :ruby22_32 => "c:/ruby22/bin/ruby",
-      :ruby22_64 => "c:/ruby22-x64/bin/ruby",
-      :ruby23_32 => "c:/ruby23/bin/ruby",
-      :ruby23_64 => "c:/ruby23-x64/bin/ruby",
-      :ruby24_32 => "c:/ruby24/bin/ruby",
-      :ruby24_64 => "c:/ruby24-x64/bin/ruby"
+      {
+        :ruby2_32  => {:path => "c:/ruby200/bin/ruby",     :msys => :msys1},
+        :ruby2_64  => {:path => "c:/ruby200-x64/bin/ruby", :msys => :msys1},
+        :ruby21_32 => {:path => "c:/ruby21/bin/ruby",      :msys => :msys1},
+        :ruby21_64 => {:path => "c:/ruby21-x64/bin/ruby",  :msys => :msys1},
+        :ruby22_32 => {:path => "c:/ruby22/bin/ruby",      :msys => :msys1},
+        :ruby22_64 => {:path => "c:/ruby22-x64/bin/ruby",  :msys => :msys1},
+        :ruby23_32 => {:path => "c:/ruby23/bin/ruby",      :msys => :msys1},
+        :ruby23_64 => {:path => "c:/ruby23-x64/bin/ruby",  :msys => :msys1},
+        :ruby24_32 => {:path => "c:/ruby24/bin/ruby",      :msys => :msys2},
+        :ruby24_64 => {:path => "c:/ruby24-x64/bin/ruby",  :msys => :msys2}
+      }
     )
 
     Rake::Task[:clobber].invoke
 
-    args.each{ |key, rubyx|
-      # Adjust devkit paths as needed.
-      if `"#{rubyx}" -v` =~ /x64/i
-        ENV['PATH'] = "C:/Devkit64/bin;C:/Devkit64/mingw/bin;" + ENV['PATH']
-      else
-        ENV['PATH'] = "C:/Devkit/bin;C:/Devkit/mingw/bin;" + ENV['PATH']
-      end
+    args.each{ |key|
+      default_path = ENV['PATH']
 
-      mkdir_p "lib/win32/#{key}/win32"
+      if key[1][:msys] == :msys1
+        # Adjust devkit paths as needed.
+        if `"#{key[1][:path]}" -v` =~ /x64/i
+          ENV['PATH'] = "C:/Devkit64/bin;C:/Devkit64/mingw/bin;" + ENV['PATH']
+        else
+          ENV['PATH'] = "C:/Devkit/bin;C:/Devkit/mingw/bin;" + ENV['PATH']
+        end
+      elsif key[1][:msys] == :msys2
+        ENV['PATH'] = "C:/msys2/usr/bin;" + ENV['PATH']
+      end
+      mkdir_p "lib/win32/#{key.first}/win32"
 
       Dir.chdir('ext') do
         sh "make distclean" rescue nil
-        sh "#{rubyx} extconf.rb"
+        sh "#{key[1][:path]} extconf.rb"
         sh "make"
-        cp 'api.so', "../lib/win32/#{key}/win32/api.so"
+        cp 'api.so', "../lib/win32/#{key.first}/win32/api.so"
       end
-    }
 
+      ENV['PATH'] = default_path
+    }
 text = <<HERE
 require 'rbconfig'
 begin
