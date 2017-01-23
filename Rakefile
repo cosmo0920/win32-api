@@ -89,7 +89,14 @@ namespace 'gem' do
           ENV['PATH'] = "C:/Devkit/bin;C:/Devkit/mingw/bin;" + ENV['PATH']
         end
       elsif key[1][:msys] == :msys2
-        ENV['PATH'] = "C:/msys64/usr/bin;" + ENV['PATH']
+        ENV.delete('RI_DEVKIT')
+        devkit = nil
+        # Adjust devkit paths as needed.
+        if `"#{key[1][:path]}" -v` =~ /x64/i
+          ENV['PATH'] = "C:/msys64/usr/bin;C:/msys64/mingw64/bin;" + ENV['PATH']
+        else
+          ENV['PATH'] = "C:/msys64/usr/bin;C:/msys64/mingw32/bin;" + ENV['PATH']
+        end
       end
       mkdir_p "lib/win32/#{key.first}/win32"
 
@@ -102,6 +109,7 @@ namespace 'gem' do
 
       ENV['PATH'] = default_path
     }
+
 text = <<HERE
 require 'rbconfig'
 begin
