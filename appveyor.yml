@@ -6,6 +6,18 @@ install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
   - "%devkit64%\\devkitvars.bat"
   - "%devkit32%\\devkitvars.bat"
+  # Update pacman database.
+  - c:/msys64/usr/bin/bash -lc "pacman -Sy --noconfirm"
+  - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm pacman"
+  - c:/msys64/usr/bin/bash -lc "pacman -R --noconfirm repman-git"
+  # for 32 bit ext library.
+  - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm --needed base-devel mingw-w64-i686-toolchain"
+  # for 64 bit ext library.
+  - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm --needed base-devel mingw-w64-x86_64-toolchain"
+  - ps: Start-FileDownload https://github.com/larskanis/rubyinstaller2/releases/download/2.4.0-6/rubyinstaller-2.4.0-6-x86.exe
+  - rubyinstaller-2.4.0-6-x86.exe TYPE=full /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLICATIONS /NORESTARTAPPLICATIONS /DIR="C:\Ruby24"
+  - ps: Start-FileDownload https://github.com/larskanis/rubyinstaller2/releases/download/2.4.0-6/rubyinstaller-2.4.0-6-x64.exe
+  - rubyinstaller-2.4.0-6-x64.exe TYPE=full /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLICATIONS /NORESTARTAPPLICATIONS /DIR="C:\Ruby24-x64"
   - ruby --version
   - gem --version
   - bundle install
