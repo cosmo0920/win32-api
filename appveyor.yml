@@ -28,6 +28,12 @@ test_script:
 
 environment:
   matrix:
+    - ruby_version: "24-x64"
+      devkit64: C:\Ruby23-x64\DevKit
+      devkit32: C:\Ruby23\DevKit
+    - ruby_version: "24"
+      devkit64: C:\Ruby23-x64\DevKit
+      devkit32: C:\Ruby23\DevKit
     - ruby_version: "23-x64"
       devkit64: C:\Ruby23-x64\DevKit
       devkit32: C:\Ruby23\DevKit
