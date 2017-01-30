@@ -81,18 +81,18 @@ namespace 'gem' do
     args.each{ |key|
       default_path = ENV['PATH']
 
-      if key[1][:msys] == :msys1
+      if key.last[:msys] == :msys1
         # Adjust devkit paths as needed.
-        if `"#{key[1][:path]}" -v` =~ /x64/i
+        if `"#{key.last[:path]}" -v` =~ /x64/i
           ENV['PATH'] = "C:/Devkit64/bin;C:/Devkit64/mingw/bin;" + ENV['PATH']
         else
           ENV['PATH'] = "C:/Devkit/bin;C:/Devkit/mingw/bin;" + ENV['PATH']
         end
-      elsif key[1][:msys] == :msys2
+      elsif key.last[:msys] == :msys2
         ENV.delete('RI_DEVKIT')
         devkit = nil
         # Adjust devkit paths as needed.
-        if `"#{key[1][:path]}" -v` =~ /x64/i
+        if `"#{key.last[:path]}" -v` =~ /x64/i
           ENV['PATH'] = "C:/msys64/usr/bin;C:/msys64/mingw64/bin;" + ENV['PATH']
         else
           ENV['PATH'] = "C:/msys64/usr/bin;C:/msys64/mingw32/bin;" + ENV['PATH']
@@ -102,7 +102,7 @@ namespace 'gem' do
 
       Dir.chdir('ext') do
         sh "make distclean" rescue nil
-        sh "#{key[1][:path]} extconf.rb"
+        sh "#{key.last[:path]} extconf.rb"
         sh "make"
         cp 'api.so', "../lib/win32/#{key.first}/win32/api.so"
       end
