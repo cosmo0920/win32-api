@@ -90,7 +90,6 @@ namespace 'gem' do
         end
       elsif key.last[:msys] == :msys2
         ENV.delete('RI_DEVKIT')
-        devkit = nil
         # Adjust devkit paths as needed.
         if `"#{key.last[:path]}" -v` =~ /x64/i
           ENV['PATH'] = "C:/msys64/usr/bin;C:/msys64/mingw64/bin;" + ENV['PATH']
