@@ -6,55 +6,68 @@ install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
   - "%devkit64%\\devkitvars.bat"
   - "%devkit32%\\devkitvars.bat"
-  # Update pacman database.
-  - c:/msys64/usr/bin/bash -lc "pacman -Sy --noconfirm"
-  - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm pacman"
-  - c:/msys64/usr/bin/bash -lc "pacman -R --noconfirm repman-git"
-  # for 32 bit ext library.
-  - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm --needed base-devel mingw-w64-i686-toolchain"
-  # for 64 bit ext library.
-  - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm --needed base-devel mingw-w64-x86_64-toolchain"
+  # # Update pacman database.
+  # - c:/msys64/usr/bin/bash -lc "pacman -Sy --noconfirm"
+  # - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm pacman"
+  # - c:/msys64/usr/bin/bash -lc "pacman -R --noconfirm repman-git"
+  # # for 32 bit ext library.
+  # - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm --needed base-devel mingw-w64-i686-toolchain"
+  # # for 64 bit ext library.
+  # - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm --needed base-devel mingw-w64-x86_64-toolchain"
   - ps: Start-FileDownload https://github.com/larskanis/rubyinstaller2/releases/download/2.4.0-7/rubyinstaller-2.4.0-7-x86.exe
   - rubyinstaller-2.4.0-7-x86.exe TYPE=full /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLICATIONS /NORESTARTAPPLICATIONS /DIR="C:\Ruby24"
   - ps: Start-FileDownload https://github.com/larskanis/rubyinstaller2/releases/download/2.4.0-7/rubyinstaller-2.4.0-7-x64.exe
   - rubyinstaller-2.4.0-7-x64.exe TYPE=full /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLICATIONS /NORESTARTAPPLICATIONS /DIR="C:\Ruby24-x64"
   - ruby --version
   - gem --version
+  - IF %msys2%==1 ridk.cmd enable
+  - IF %msys2%==1 gem install bundler
   - bundle install
 build: off
 test_script:
   - bundle exec rake gem:binary
-  - bundle exec rake test:all
+  - IF %msys2%==0 bundle exec rake test:all
+  - IF %msys2%==1 ridk.cmd exec bundle exec rake test:all
 
 environment:
   matrix:
     - ruby_version: "24-x64"
       devkit64: C:\Ruby23-x64\DevKit
       devkit32: C:\Ruby23\DevKit
+      msys2: 1
     - ruby_version: "24"
       devkit64: C:\Ruby23-x64\DevKit
       devkit32: C:\Ruby23\DevKit
+      msys2: 1
     - ruby_version: "23-x64"
       devkit64: C:\Ruby23-x64\DevKit
       devkit32: C:\Ruby23\DevKit
+      msys2: 0
     - ruby_version: "23"
       devkit64: C:\Ruby23-x64\DevKit
       devkit32: C:\Ruby23\DevKit
+      msys2: 0
     - ruby_version: "22-x64"
       devkit64: C:\Ruby23-x64\DevKit
       devkit32: C:\Ruby23\DevKit
+      msys2: 0
     - ruby_version: "22"
       devkit64: C:\Ruby23-x64\DevKit
       devkit32: C:\Ruby23\DevKit
+      msys2: 0
     - ruby_version: "21-x64"
       devkit64: C:\Ruby23-x64\DevKit
       devkit32: C:\Ruby23\DevKit
+      msys2: 0
     - ruby_version: "21"
       devkit64: C:\Ruby23-x64\DevKit
       devkit32: C:\Ruby23\DevKit
+      msys2: 0
     - ruby_version: "200-x64"
       devkit64: C:\Ruby23-x64\DevKit
       devkit32: C:\Ruby23\DevKit
+      msys2: 0
     - ruby_version: "200"
       devkit64: C:\Ruby23-x64\DevKit
       devkit32: C:\Ruby23\DevKit
+      msys2: 0
