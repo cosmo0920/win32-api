@@ -1,3 +1,7 @@
+== 1.6.1.beta1 - 14-Jan-201
+* Now includes binaries for Ruby 2.4 for both 32 and 64 bit versions.
+* Try to depends on MSYS2 based RubyInstaller2 on Ruby 2.4.
+
 == 1.6.0 - 09-Jun-2016
 * Now includes binaries for Ruby 2.3 for both 32 and 64 bit versions.
 * Now drop support Ruby 1.9 or earlier.
