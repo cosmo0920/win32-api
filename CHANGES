@@ -1,7 +1,10 @@
-== 1.6.1.1 - 31-Jan 2017
+== 1.6.1.2 - 2-Feb-2017
+* Fix wrong gem packaging.
+
+== 1.6.1.1 - 31-Jan-2017 (yanked)
 * Fix wrong returning version number
 
-== 1.6.1 - 31-Jan 2017 (yanked)
+== 1.6.1 - 31-Jan-2017 (yanked)
 * Depends on MSYS2 based RubyInstaller2 to create binaries for Ruby 2.4.0.
 
 == 1.6.1.beta1 - 14-Jan-2017
