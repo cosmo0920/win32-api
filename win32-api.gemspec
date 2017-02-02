@@ -2,7 +2,7 @@ require 'rubygems'
 
 Gem::Specification.new do |spec|
   spec.name       = 'win32-api'
-  spec.version    = '1.6.1.1'
+  spec.version    = '1.6.1.2'
   spec.authors    = ['Daniel J. Berger', 'Park Heesob', 'Hiroshi Hatake']
   spec.license    = 'Artistic-2.0'
   spec.email      = 'djberg96@gmail.com'
@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.summary    = 'A superior replacement for Win32API'
   spec.test_files = Dir['test/test*']
   spec.extensions = ['ext/extconf.rb']
-  spec.files      =  `git ls-files`.split($\)
+  spec.files      = Dir['**/*'].reject{ |f| f.include?('git') }
 
   spec.required_ruby_version = '>= 1.8.2'
   spec.extra_rdoc_files = ['README', 'CHANGES', 'MANIFEST', 'ext/win32/api.c']
