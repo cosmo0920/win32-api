@@ -83,6 +83,12 @@ namespace 'gem' do
     args.each{ |key|
       default_path = ENV['PATH']
 
+      # TODO: Remove this when Ruby 2.5 is released.
+      unless File.exist?("#{key.last[:path]}.exe")
+        puts "#{key.last[:path]} does not exist! Skip."
+        next
+      end
+
       if key.last[:msys] == :msys1
         # Adjust devkit paths as needed.
         if `"#{key.last[:path]}" -v` =~ /x64/i
