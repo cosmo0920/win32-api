@@ -83,8 +83,9 @@ namespace 'gem' do
     args.each{ |key|
       default_path = ENV['PATH']
 
-      # TODO: Remove this when Ruby 2.5 is released.
-      unless File.exist?("#{key.last[:path]}.exe")
+      spec = eval(IO.read('win32-api.gemspec'))
+
+      if spec.version.prerelease? && !File.exist?("#{key.last[:path]}.exe")
         puts "#{key.last[:path]} does not exist! Skip."
         next
       end
