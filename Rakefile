@@ -72,7 +72,9 @@ namespace 'gem' do
         :ruby23_32 => {:path => "c:/ruby23/bin/ruby",      :msys => :msys1},
         :ruby23_64 => {:path => "c:/ruby23-x64/bin/ruby",  :msys => :msys1},
         :ruby24_32 => {:path => "c:/ruby24/bin/ruby",      :msys => :msys2},
-        :ruby24_64 => {:path => "c:/ruby24-x64/bin/ruby",  :msys => :msys2}
+        :ruby24_64 => {:path => "c:/ruby24-x64/bin/ruby",  :msys => :msys2},
+        :ruby25_32 => {:path => "c:/ruby25/bin/ruby",      :msys => :msys2},
+        :ruby25_64 => {:path => "c:/ruby25-x64/bin/ruby",  :msys => :msys2}
       }
     )
 
@@ -80,6 +82,13 @@ namespace 'gem' do
 
     args.each{ |key|
       default_path = ENV['PATH']
+
+      spec = eval(IO.read('win32-api.gemspec'))
+
+      if spec.version.prerelease? && !File.exist?("#{key.last[:path]}.exe")
+        puts "#{key.last[:path]} does not exist! Skip."
+        next
+      end
 
       if key.last[:msys] == :msys1
         # Adjust devkit paths as needed.
@@ -151,6 +160,14 @@ begin
         require File.join(File.dirname(__FILE__), 'ruby24_64/win32/api')
       else
         require File.join(File.dirname(__FILE__), 'ruby24_32/win32/api')
+      end
+    end
+
+    if RbConfig::CONFIG['MINOR'] == '5'
+      if RbConfig::CONFIG['arch'] =~ /x64/i
+        require File.join(File.dirname(__FILE__), 'ruby25_64/win32/api')
+      else
+        require File.join(File.dirname(__FILE__), 'ruby25_32/win32/api')
       end
     end
 
