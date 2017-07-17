@@ -98,7 +98,7 @@
   Possible callback issues when dealing with multi-threaded applications.
 
   Please submit any bug reports to the project page at
-  https://github.com/djberg96/win32-api
+  https://github.com/cosmo0920/win32-api
 
 == Contributions
   Although this library is free, please consider having your company
@@ -117,7 +117,7 @@
 
 = Copyright
   (C) 2003-2015 Daniel J. Berger
-  (C) 2016 Hiroshi Hatake
+  (C) 2016-2017 Hiroshi Hatake
   All Rights Reserved
 
 = License
