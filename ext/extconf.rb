@@ -6,6 +6,10 @@
 ##########################################################################
 require 'mkmf'
 
+if RbConfig::CONFIG['host_os'] =~ /mingw/
+  $CFLAGS << ' -fno-omit-frame-pointer'
+end
+
 have_func('strncpy_s')
 
 create_makefile('win32/api', 'win32')
