@@ -9,7 +9,7 @@ install:
   - ruby --version
   - gem --version
   - IF %msys2%==1 ridk.cmd enable
-  - IF %msys2%==1 gem install bundler
+  - IF %msys2%==1 gem install bundler --force
   - bundle install
 build: off
 test_script:
