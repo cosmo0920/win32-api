@@ -1,3 +1,6 @@
+== 1.7.0 - 28-Nov-2017
+* Add gcc option to fix crash on RubyInstaller2 x86
+
 == 1.7.0.pre1 - 16-July-2017
 * Add Ruby 2.5 snapshot support.
 * Now includes binaries for Ruby 2.5 for both 32 and 64 bit versions.
