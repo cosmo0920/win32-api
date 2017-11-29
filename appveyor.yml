@@ -1,61 +1,42 @@
 version: '{build}'
 
+init:
+  # use a minimal path
+  - set PATH=C:\ruby%ruby_version%\bin;C:\Program Files\7-Zip;C:\Program Files\AppVeyor\BuildAgent;C:\Program Files\Git\cmd;C:\Windows\system32
+  # Load ruby trunk build
+  - if %ruby_version%==_trunk (
+      appveyor DownloadFile https://ci.appveyor.com/api/projects/MSP-Greg/ruby-loco/artifacts/ruby_trunk.7z -FileName C:\ruby_trunk.7z &
+      7z x C:\ruby_trunk.7z -oC:\ruby_trunk
+    )
+
 platform: x64
 
 install:
-  - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
-  - "%devkit64%\\devkitvars.bat"
-  - "%devkit32%\\devkitvars.bat"
   - ruby --version
   - gem --version
-  - IF %msys2%==1 ridk.cmd enable
-  - IF %msys2%==1 gem install bundler --force
+  # Assume we can use the version of bundler that Appveyor has packaged with each ruby version
   - bundle install
+
 build: off
+
 test_script:
   - bundle exec rake gem:binary
-  - IF %msys2%==0 bundle exec rake test:all
-  - IF %msys2%==1 ridk.cmd exec bundle exec rake test:all
+  - bundle exec rake -rdevkit test:all
 
 environment:
   matrix:
-    - ruby_version: "24-x64"
-      devkit64: C:\Ruby23-x64\DevKit
-      devkit32: C:\Ruby23\DevKit
-      msys2: 1
-    - ruby_version: "24"
-      devkit64: C:\Ruby23-x64\DevKit
-      devkit32: C:\Ruby23\DevKit
-      msys2: 1
-    - ruby_version: "23-x64"
-      devkit64: C:\Ruby23-x64\DevKit
-      devkit32: C:\Ruby23\DevKit
-      msys2: 0
-    - ruby_version: "23"
-      devkit64: C:\Ruby23-x64\DevKit
-      devkit32: C:\Ruby23\DevKit
-      msys2: 0
-    - ruby_version: "22-x64"
-      devkit64: C:\Ruby23-x64\DevKit
-      devkit32: C:\Ruby23\DevKit
-      msys2: 0
-    - ruby_version: "22"
-      devkit64: C:\Ruby23-x64\DevKit
-      devkit32: C:\Ruby23\DevKit
-      msys2: 0
-    - ruby_version: "21-x64"
-      devkit64: C:\Ruby23-x64\DevKit
-      devkit32: C:\Ruby23\DevKit
-      msys2: 0
-    - ruby_version: "21"
-      devkit64: C:\Ruby23-x64\DevKit
-      devkit32: C:\Ruby23\DevKit
-      msys2: 0
-    - ruby_version: "200-x64"
-      devkit64: C:\Ruby23-x64\DevKit
-      devkit32: C:\Ruby23\DevKit
-      msys2: 0
-    - ruby_version: "200"
-      devkit64: C:\Ruby23-x64\DevKit
-      devkit32: C:\Ruby23\DevKit
-      msys2: 0
+    - ruby_version: _trunk
+    - ruby_version: 24-x64
+    - ruby_version: 24
+    - ruby_version: 23-x64
+    - ruby_version: 23
+    - ruby_version: 22-x64
+    - ruby_version: 22
+    - ruby_version: 21-x64
+    - ruby_version: 21
+    - ruby_version: 200-x64
+    - ruby_version: 200
+
+matrix:
+  allow_failures:
+    - ruby_version: _trunk

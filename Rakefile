@@ -61,62 +61,67 @@ namespace 'gem' do
   desc 'Build a binary gem'
   task :binary, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64, :ruby23_32, :ruby23_64, :ruby24_32, :ruby24_64 do |task, args|
     # These are just what's on my system at the moment. Adjust as needed.
+    # ri refers to RubyInstaller, ruby 2.3 and prev were built with RubyInstaller (:ri),
+    # 2.4 and later with RubyInstaller2 (:ri2)
+    # pre variable allows local builds with ruby & DevKit not at drive root
+
+    dk_path = {}
+    if ENV['APPVEYOR'] =~ /true/i
+      pre = "C:"
+      dk_path[:ri]    = "C:/ruby23/DevKit/bin;C:/ruby23/DevKit/mingw/bin"
+      dk_path[:ri_64] = "C:/ruby23-x64/DevKit/bin;C:/ruby23-x64/DevKit/mingw/bin"
+    else
+      ENV['BASEPATH'] = ENV['PATH'].gsub(/\\/, '/')
+      pre = "C:"
+      dk_path[:ri]    = "#{pre}/Devkit/bin;#{pre}/Devkit/mingw/bin"
+      dk_path[:ri_64] = "#{pre}/Devkit64/bin;#{pre}/Devkit64/mingw/bin"
+    end
+    # at present, Appveyor & local DevKit paths match for ri2
+    dk_path[:ri2]    = "C:/msys64/usr/bin;C:/msys64/mingw32/bin"
+    dk_path[:ri2_64] = "C:/msys64/usr/bin;C:/msys64/mingw64/bin"
+
     args.with_defaults(
       {
-        :ruby2_32  => {:path => "c:/ruby200/bin/ruby",     :msys => :msys1},
-        :ruby2_64  => {:path => "c:/ruby200-x64/bin/ruby", :msys => :msys1},
-        :ruby21_32 => {:path => "c:/ruby21/bin/ruby",      :msys => :msys1},
-        :ruby21_64 => {:path => "c:/ruby21-x64/bin/ruby",  :msys => :msys1},
-        :ruby22_32 => {:path => "c:/ruby22/bin/ruby",      :msys => :msys1},
-        :ruby22_64 => {:path => "c:/ruby22-x64/bin/ruby",  :msys => :msys1},
-        :ruby23_32 => {:path => "c:/ruby23/bin/ruby",      :msys => :msys1},
-        :ruby23_64 => {:path => "c:/ruby23-x64/bin/ruby",  :msys => :msys1},
-        :ruby24_32 => {:path => "c:/ruby24/bin/ruby",      :msys => :msys2},
-        :ruby24_64 => {:path => "c:/ruby24-x64/bin/ruby",  :msys => :msys2},
-        :ruby25_32 => {:path => "c:/ruby25/bin/ruby",      :msys => :msys2},
-        :ruby25_64 => {:path => "c:/ruby25-x64/bin/ruby",  :msys => :msys2}
+        :ruby2_32  => {:path => "#{pre}/ruby200/bin",     :ri => :ri},
+        :ruby2_64  => {:path => "#{pre}/ruby200-x64/bin", :ri => :ri_64},
+        :ruby21_32 => {:path => "#{pre}/ruby21/bin",      :ri => :ri},
+        :ruby21_64 => {:path => "#{pre}/ruby21-x64/bin",  :ri => :ri_64},
+        :ruby22_32 => {:path => "#{pre}/ruby22/bin",      :ri => :ri},
+        :ruby22_64 => {:path => "#{pre}/ruby22-x64/bin",  :ri => :ri_64},
+        :ruby23_32 => {:path => "#{pre}/ruby23/bin",      :ri => :ri},
+        :ruby23_64 => {:path => "#{pre}/ruby23-x64/bin",  :ri => :ri_64},
+        :ruby24_32 => {:path => "#{pre}/ruby24/bin",      :ri => :ri2},
+        :ruby24_64 => {:path => "#{pre}/ruby24-x64/bin",  :ri => :ri2_64},
+        :ruby25_32 => {:path => "#{pre}/ruby25/bin",      :ri => :ri2},
+        :ruby25_64 => {:path => "#{pre}/ruby25-x64/bin",  :ri => :ri2_64}
       }
     )
 
     Rake::Task[:clobber].invoke
 
-    args.each{ |key|
-      default_path = ENV['PATH']
+    default_path = ENV['PATH']
 
+    args.each { |key|
       spec = eval(IO.read('win32-api.gemspec'))
 
       # TODO: Remove these lines when Ruby 2.5.0 is released.
-      if (spec.version == Gem::Version.new("1.7.0")) && !File.exist?("#{key.last[:path]}.exe")
-        puts "#{key.last[:path]} does not exist! Skip."
+      if (spec.version == Gem::Version.new("1.7.0")) && !File.exist?("#{key.last[:path]}/ruby.exe")
+        puts "#{key.last[:path]}/ruby does not exist! Skip."
         next
       end
 
-      if key.last[:msys] == :msys1
-        # Adjust devkit paths as needed.
-        if `"#{key.last[:path]}" -v` =~ /x64/i
-          ENV['PATH'] = "C:/Devkit64/bin;C:/Devkit64/mingw/bin;" + ENV['PATH']
-        else
-          ENV['PATH'] = "C:/Devkit/bin;C:/Devkit/mingw/bin;" + ENV['PATH']
-        end
-      elsif key.last[:msys] == :msys2
-        ENV.delete('RI_DEVKIT')
-        # Adjust devkit paths as needed.
-        if `"#{key.last[:path]}" -v` =~ /x64/i
-          ENV['PATH'] = "C:/msys64/usr/bin;C:/msys64/mingw64/bin;" + ENV['PATH']
-        else
-          ENV['PATH'] = "C:/msys64/usr/bin;C:/msys64/mingw32/bin;" + ENV['PATH']
-        end
-      end
+      bld_path = "#{key.last[:path]};#{dk_path[key.last[:ri]]};#{ENV['BASEPATH']}"
       mkdir_p "lib/win32/#{key.first}/win32"
 
       Dir.chdir('ext') do
+        ENV['PATH'] = bld_path
         sh "make distclean" rescue nil
-        sh "#{key.last[:path]} extconf.rb"
+        sh "ruby extconf.rb"
         sh "make"
+        sh "strip --strip-unneeded -p api.so"
+        ENV['PATH'] = default_path
         cp 'api.so', "../lib/win32/#{key.first}/win32/api.so"
       end
-
-      ENV['PATH'] = default_path
     }
 
 text = <<HERE
