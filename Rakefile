@@ -85,7 +85,8 @@ namespace 'gem' do
 
       spec = eval(IO.read('win32-api.gemspec'))
 
-      if spec.version.prerelease? && !File.exist?("#{key.last[:path]}.exe")
+      # TODO: Remove these lines when Ruby 2.5.0 is released.
+      if (spec.version == Gem::Version.new("1.7.0")) && !File.exist?("#{key.last[:path]}.exe")
         puts "#{key.last[:path]} does not exist! Skip."
         next
       end
