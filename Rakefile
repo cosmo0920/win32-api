@@ -59,7 +59,7 @@ namespace 'gem' do
   end
 
   desc 'Build a binary gem'
-  task :binary, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64, :ruby23_32, :ruby23_64, :ruby24_32, :ruby24_64 do |task, args|
+  task :binary, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64, :ruby23_32, :ruby23_64, :ruby24_32, :ruby24_64, :ruby25_32, :ruby25_64 do |task, args|
     # These are just what's on my system at the moment. Adjust as needed.
     # ri refers to RubyInstaller, ruby 2.3 and prev were built with RubyInstaller (:ri),
     # 2.4 and later with RubyInstaller2 (:ri2)
@@ -82,18 +82,20 @@ namespace 'gem' do
 
     args.with_defaults(
       {
-        :ruby2_32  => {:path => "#{pre}/ruby200/bin",     :ri => :ri},
-        :ruby2_64  => {:path => "#{pre}/ruby200-x64/bin", :ri => :ri_64},
-        :ruby21_32 => {:path => "#{pre}/ruby21/bin",      :ri => :ri},
-        :ruby21_64 => {:path => "#{pre}/ruby21-x64/bin",  :ri => :ri_64},
-        :ruby22_32 => {:path => "#{pre}/ruby22/bin",      :ri => :ri},
-        :ruby22_64 => {:path => "#{pre}/ruby22-x64/bin",  :ri => :ri_64},
-        :ruby23_32 => {:path => "#{pre}/ruby23/bin",      :ri => :ri},
-        :ruby23_64 => {:path => "#{pre}/ruby23-x64/bin",  :ri => :ri_64},
-        :ruby24_32 => {:path => "#{pre}/ruby24/bin",      :ri => :ri2},
-        :ruby24_64 => {:path => "#{pre}/ruby24-x64/bin",  :ri => :ri2_64},
-        :ruby25_32 => {:path => "#{pre}/ruby25/bin",      :ri => :ri2},
-        :ruby25_64 => {:path => "#{pre}/ruby25-x64/bin",  :ri => :ri2_64}
+        :ruby2_32  => {:path => "#{pre}/ruby200/bin",     :ri => :ri,     :omit => false},
+        :ruby2_64  => {:path => "#{pre}/ruby200-x64/bin", :ri => :ri_64,  :omit => false},
+        :ruby21_32 => {:path => "#{pre}/ruby21/bin",      :ri => :ri,     :omit => false},
+        :ruby21_64 => {:path => "#{pre}/ruby21-x64/bin",  :ri => :ri_64,  :omit => false},
+        :ruby22_32 => {:path => "#{pre}/ruby22/bin",      :ri => :ri,     :omit => false},
+        :ruby22_64 => {:path => "#{pre}/ruby22-x64/bin",  :ri => :ri_64,  :omit => false},
+        :ruby23_32 => {:path => "#{pre}/ruby23/bin",      :ri => :ri,     :omit => false},
+        :ruby23_64 => {:path => "#{pre}/ruby23-x64/bin",  :ri => :ri_64,  :omit => false},
+        :ruby24_32 => {:path => "#{pre}/ruby24/bin",      :ri => :ri2,    :omit => false},
+        :ruby24_64 => {:path => "#{pre}/ruby24-x64/bin",  :ri => :ri2_64, :omit => false},
+        :ruby25_32 => {:path => "#{pre}/ruby25/bin",      :ri => :ri2,    :omit => true},
+        :ruby25_64 => {:path => "#{pre}/ruby25-x64/bin",  :ri => :ri2_64, :omit => true},
+        :ruby26_32 => {:path => "#{pre}/ruby26/bin",      :ri => :ri2,    :omit => true},
+        :ruby26_64 => {:path => "#{pre}/ruby26-x64/bin",  :ri => :ri2_64, :omit => true},
       }
     )
 
@@ -102,10 +104,8 @@ namespace 'gem' do
     default_path = ENV['PATH']
 
     args.each { |key|
-      spec = eval(IO.read('win32-api.gemspec'))
-
-      # TODO: Remove these lines when Ruby 2.5.0 is released.
-      if (spec.version == Gem::Version.new("1.7.0")) && !File.exist?("#{key.last[:path]}/ruby.exe")
+      # These lines are used for trunk build.
+      if key.last[:omit] && !File.exist?("#{key.last[:path]}/ruby.exe")
         puts "#{key.last[:path]}/ruby does not exist! Skip."
         next
       end
@@ -174,6 +174,14 @@ begin
         require File.join(File.dirname(__FILE__), 'ruby25_64/win32/api')
       else
         require File.join(File.dirname(__FILE__), 'ruby25_32/win32/api')
+      end
+    end
+
+    if RbConfig::CONFIG['MINOR'] == '6'
+      if RbConfig::CONFIG['arch'] =~ /x64/i
+        require File.join(File.dirname(__FILE__), 'ruby26_64/win32/api')
+      else
+        require File.join(File.dirname(__FILE__), 'ruby26_32/win32/api')
       end
     end
 
