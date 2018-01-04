@@ -42,3 +42,5 @@ environment:
 matrix:
   allow_failures:
     - ruby_version: _trunk
+    - ruby_version: 25-x64
+    - ruby_version: 25
