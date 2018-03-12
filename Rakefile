@@ -92,8 +92,8 @@ namespace 'gem' do
         :ruby23_64 => {:path => "#{pre}/ruby23-x64/bin",  :ri => :ri_64,  :omit => false},
         :ruby24_32 => {:path => "#{pre}/ruby24/bin",      :ri => :ri2,    :omit => false},
         :ruby24_64 => {:path => "#{pre}/ruby24-x64/bin",  :ri => :ri2_64, :omit => false},
-        :ruby25_32 => {:path => "#{pre}/ruby25/bin",      :ri => :ri2,    :omit => true},
-        :ruby25_64 => {:path => "#{pre}/ruby25-x64/bin",  :ri => :ri2_64, :omit => true},
+        :ruby25_32 => {:path => "#{pre}/ruby25/bin",      :ri => :ri2,    :omit => false},
+        :ruby25_64 => {:path => "#{pre}/ruby25-x64/bin",  :ri => :ri2_64, :omit => false},
         :ruby26_32 => {:path => "#{pre}/ruby26/bin",      :ri => :ri2,    :omit => true},
         :ruby26_64 => {:path => "#{pre}/ruby26-x64/bin",  :ri => :ri2_64, :omit => true},
       }
