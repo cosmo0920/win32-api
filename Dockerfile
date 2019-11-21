@@ -83,5 +83,10 @@ RUN cmd /c C:\DevKit-mingw64-64-4.7.2-20130224-1432-sfx.exe -o"c:\DevKit64" -y
 RUN choco install -y git \
     && choco install -y msys2 --params "'/NoPath /NoUpdate /InstallDir:C:\msys64'"
 RUN refreshenv \
-    && ridk install 2 3
+    && C:\ruby26\bin\ridk install 2 3 \
+    && C:\ruby26-x64\bin\ridk install 2 3
+
+RUN git clone https://github.com/cosmo0920/win32-api.git win32-api
+RUN cd win32-api && bundle install
+RUN mkdir C:\win32-api\pkg
 ENTRYPOINT ["cmd"]
