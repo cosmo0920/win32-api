@@ -86,7 +86,4 @@ RUN refreshenv \
     && C:\ruby26\bin\ridk install 2 3 \
     && C:\ruby26-x64\bin\ridk install 2 3
 
-RUN git clone https://github.com/cosmo0920/win32-api.git win32-api
-RUN cd win32-api && bundle install
-RUN mkdir C:\win32-api\pkg
 ENTRYPOINT ["cmd"]
