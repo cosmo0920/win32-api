@@ -1,0 +1,14 @@
+FROM cosmo0920/win32-api:latest
+LABEL maintainer "Hiroshi Hatake <cosmo0920.wp@gmail.com>"
+LABEL Description="win32-api building docker image"
+
+# Ruby 2.7
+RUN powershell \
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+	Invoke-WebRequest -OutFile C:\rubyinstaller-head-x86-20191122.exe https://ci.appveyor.com/api/buildjobs/p0csmr75eiglpvc4/artifacts/packages%2Fri%2Frecipes%2Finstaller-inno%2Frubyinstaller-head-x86.exe
+RUN cmd /c "C:rubyinstaller-head-x86-20191122.exe" /silent /dir=c:\ruby27
+RUN powershell \
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+	Invoke-WebRequest -OutFile C:\rubyinstaller-head-x64-20191122.exe https://ci.appveyor.com/api/buildjobs/sc2l2ad5ise9mc5u/artifacts/packages%2Fri%2Frecipes%2Finstaller-inno%2Frubyinstaller-head-x64.exe
+RUN cmd /c "C:rubyinstaller-head-x64-20191122.exe" /silent /dir=c:\ruby27-x64
+ENTRYPOINT ["cmd"]
