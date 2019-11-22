@@ -11,4 +11,7 @@ RUN powershell \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
 	Invoke-WebRequest -OutFile C:\rubyinstaller-head-x64-20191122.exe https://ci.appveyor.com/api/buildjobs/sc2l2ad5ise9mc5u/artifacts/packages%2Fri%2Frecipes%2Finstaller-inno%2Frubyinstaller-head-x64.exe
 RUN cmd /c "C:rubyinstaller-head-x64-20191122.exe" /silent /dir=c:\ruby27-x64
+
+RUN mkdir C:\pkg
+COPY build-gem.bat C:\\build-gem.bat
 ENTRYPOINT ["cmd"]
