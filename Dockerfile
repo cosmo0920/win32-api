@@ -70,6 +70,16 @@ RUN powershell \
 	Invoke-WebRequest -OutFile C:\rubyinstaller-2.6.5-1-x64.exe https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.6.5-1/rubyinstaller-2.6.5-1-x64.exe
 RUN cmd /c "C:\rubyinstaller-2.6.5-1-x64.exe" /silent /dir=c:\ruby26-x64
 
+# Ruby 2.7
+RUN powershell \
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+	Invoke-WebRequest -OutFile C:\rubyinstaller-2.7.0-1-x86.exe https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.7.0-1/rubyinstaller-2.7.0-1-x86.exe
+RUN cmd /c "C:\rubyinstaller-2.7.0-1-x86.exe" /silent /dir=c:\ruby27
+RUN powershell \
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+	Invoke-WebRequest -OutFile C:\rubyinstaller-2.7.0-1-x64.exe https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.7.0-1/rubyinstaller-2.7.0-1-x64.exe
+RUN cmd /c "C:\rubyinstaller-2.7.0-1-x64.exe" /silent /dir=c:\ruby27-x64
+
 # DevKit
 RUN powershell \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
@@ -83,7 +93,7 @@ RUN cmd /c C:\DevKit-mingw64-64-4.7.2-20130224-1432-sfx.exe -o"c:\DevKit64" -y
 RUN choco install -y git \
     && choco install -y msys2 --params "'/NoPath /NoUpdate /InstallDir:C:\msys64'"
 RUN refreshenv \
-    && C:\ruby26\bin\ridk install 2 3 \
-    && C:\ruby26-x64\bin\ridk install 2 3
+    && C:\ruby27\bin\ridk install 2 3 \
+    && C:\ruby27-x64\bin\ridk install 2 3
 
 ENTRYPOINT ["cmd"]
