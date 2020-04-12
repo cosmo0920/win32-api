@@ -1,8 +1,10 @@
-= Description
+# Description
   This is a drop-in replacement for the Win32API library currently part of
   Ruby's standard library.
 
-= Synopsis
+# Synopsis
+
+```ruby
   require 'win32/api'
   include Win32
 
@@ -35,8 +37,9 @@
   addr = GetProcAddress.call(hlib, 'MessageBeep')
   func = Win32::API::Function.new(addr, 'L', 'L')
   func.call(0)
+```
 
-= Differences between win32-api and Win32API
+# Differences between win32-api and Win32API
   * This library has callback support
   * This library supports raw function pointers.
   * This library supports a separate string type for const char* (S).
@@ -48,9 +51,9 @@
   * Removed the support for lower case prototype and return types. Always
     use capital letters.
 
-= Developer's Notes
-  [NOTE: Some of the information below is now out of date, but explains my
-  motivation at the time the project was originally created.]
+# Developer's Notes
+  NOTE: **Some of the information below is now out of date, but explains my
+  motivation at the time the project was originally created.**
 
   The current Win32API library that ships with the standard library has been
   slated for removal from Ruby 2.0 and it will not receive any updates in the
@@ -76,7 +79,7 @@
   Most importantly, we can now add, modify and fix any features that we feel
   best benefit our end users.
 
-= Multiple Binaries
+# Multiple Binaries
   As of win32-api 1.4.8 a binary gem is shipped that contains binaries for
   both Ruby 1.8, Ruby 1.9, and 2.x. For Ruby 2.x, both 32 and 64 bit binaries
   are included as of release 1.5.0.
@@ -84,29 +87,29 @@
   The file under lib/win32 dynamically requires the correct binary based on
   your version of Ruby.
 
-= Documentation
+# Documentation
   The source file contains inline RDoc documentation. If you installed
   this file as a gem, then you have the docs. Run "gem server" and point
   your browser at http://localhost:8808 to see them.
 
-= Warranty
+# Warranty
   This package is provided "as is" and without any express or
   implied warranties, including, without limitation, the implied
   warranties of merchantability and fitness for a particular purpose.
 
-= Known Issues
+# Known Issues
   Possible callback issues when dealing with multi-threaded applications.
 
   Please submit any bug reports to the project page at
   https://github.com/cosmo0920/win32-api
 
-== Contributions
+## Contributions
   Although this library is free, please consider having your company
   setup a gittip if used by your company professionally.
 
   http://www.gittip.com/djberg96/
 
-= Future Plans
+# Future Plans
   I really don't have future plans for this library since you should use FFI
   as your preferred C interface going forward. All of my own projects have
   since been converted to either use FFI or an analogous OLE interface.
@@ -115,15 +118,17 @@
   there who are still using it, but I strongly encourage you to convert
   your projects to FFI when possible.
 
-= Copyright
+# Copyright
   (C) 2003-2015 Daniel J. Berger
+
   (C) 2016-2020 Hiroshi Hatake
+
   All Rights Reserved
 
-= License
+# License
   Artistic 2.0
 
-= Authors
+# Authors
   Daniel J. Berger
   Park Heesob
   Hiroshi Hatake

@@ -1,6 +1,6 @@
 * CHANGES
 * MANIFEST
-* README
+* README.md
 * Rakefile
 * win32-api.gemspec
 * ext/extconf.rb

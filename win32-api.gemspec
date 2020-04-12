@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.files      = Dir['**/*'].reject{ |f| f.include?('git') }
 
   spec.required_ruby_version = '>= 1.8.2'
-  spec.extra_rdoc_files = ['README', 'CHANGES', 'MANIFEST', 'ext/win32/api.c']
+  spec.extra_rdoc_files = ['CHANGES', 'MANIFEST', 'ext/win32/api.c']
 
   spec.add_development_dependency('test-unit', '>= 2.5.0')
   spec.add_development_dependency('rake')
