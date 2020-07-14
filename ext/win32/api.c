@@ -288,8 +288,10 @@ static VALUE api_init(int argc, VALUE* argv, VALUE self)
    if(NIL_P(v_return))
       v_return = rb_str_new2("L");
 
+#if defined TAINTING_SUPPORT
    SafeStringValue(v_dll);
    SafeStringValue(v_proc);
+#endif
 
    hLibrary = LoadLibrary(TEXT(RSTRING_PTR(v_dll)));
 
@@ -356,7 +358,9 @@ static VALUE api_init(int argc, VALUE* argv, VALUE self)
    // Push the numeric prototypes onto our int array for later use.
 
    for(i = 0; i < RARRAY_LEN(v_proto); i++){
+#if defined TAINTING_SUPPORT
       SafeStringValue(RARRAY_PTR(v_proto)[i]);
+#endif
       switch(*(TCHAR*)StringValuePtr(RARRAY_PTR(v_proto)[i])){
          case 'L':
             ptr->prototype[i] = _T_LONG;
@@ -391,7 +395,9 @@ static VALUE api_init(int argc, VALUE* argv, VALUE self)
       ptr->return_type = _T_VOID;
    }
    else{
+#if defined TAINTING_SUPPORT
       SafeStringValue(v_return);
+#endif
       switch(*RSTRING_PTR(v_return)){
          case 'L':
             ptr->return_type = _T_LONG;
@@ -482,7 +488,9 @@ static VALUE func_init(int argc, VALUE* argv, VALUE self){
    // Push the numeric prototypes onto our int array for later use.
 
    for(i = 0; i < RARRAY_LEN(v_proto); i++){
+#if defined TAINTING_SUPPORT
       SafeStringValue(RARRAY_PTR(v_proto)[i]);
+#endif
       switch(*(char*)StringValuePtr(RARRAY_PTR(v_proto)[i])){
          case 'L':
             ptr->prototype[i] = _T_LONG;
@@ -517,7 +525,9 @@ static VALUE func_init(int argc, VALUE* argv, VALUE self){
       ptr->return_type = _T_VOID;
    }
    else{
+#if defined TAINTING_SUPPORT
       SafeStringValue(v_return);
+#endif
       switch(*RSTRING_PTR(v_return)){
          case 'L':
             ptr->return_type = _T_LONG;
