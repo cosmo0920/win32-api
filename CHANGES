@@ -1,3 +1,6 @@
+== 1.9.1 - 14-Jul-2020
+* Handle whether tainted support or not.
+
 == 1.9.0 - 6-Jan-2020
 * Add Ruby 2.8 snapshot support.
 * Now includes binaries for Ruby 2.8 both 32 and 64 bit versions.
