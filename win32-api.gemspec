@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.authors    = ['Daniel J. Berger', 'Park Heesob', 'Hiroshi Hatake']
   spec.license    = 'Artistic-2.0'
   spec.email      = 'djberg96@gmail.com'
-  spec.homepage   = 'http://github.com/djberg96/win32-api'
+  spec.homepage   = 'http://github.com/cosmo0920/win32-api'
   spec.summary    = 'A superior replacement for Win32API'
   spec.test_files = Dir['test/test*']
   spec.extensions = ['ext/extconf.rb']
