@@ -4,6 +4,8 @@
 
 ### Release step
 
+#### Fat GEM
+
 Check the latest ruby-head-YYYYmmDD image:
 https://hub.docker.com/r/cosmo0920/win32-api/tags?page=1&name=ruby-head
 
@@ -28,5 +30,12 @@ Then, exit and push built gem:
 
 ```cmd
 > exit
+> gem push win32-api-*.gem
+```
+
+#### Non Fat GEM
+
+```cmd
+> rake gem:create
 > gem push win32-api-*.gem
 ```
