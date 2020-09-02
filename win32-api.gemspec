@@ -15,6 +15,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 1.8.2'
   spec.extra_rdoc_files = ['CHANGES', 'MANIFEST', 'ext/win32/api.c']
 
+  spec.add_development_dependency('bundler', ['>= 1.17', '< 3'])
   spec.add_development_dependency('test-unit', '>= 2.5.0')
   spec.add_development_dependency('rake')
 
