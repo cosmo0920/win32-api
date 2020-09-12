@@ -16,23 +16,29 @@
 #define RARRAY_LEN(a) (RARRAY(a)->len)
 #endif
 
-#if defined(HAVE_LONG_LONG) && SIZEOF_SIZE_T > SIZEOF_LONG
-# define NUM2SIZET(x) ((size_t)NUM2ULL(x))
-# define NUM2SSIZET(x) ((ssize_t)NUM2LL(x))
-#else
-# define NUM2SIZET(x) NUM2ULONG(x)
-# define NUM2SSIZET(x) NUM2LONG(x)
+/* Use Ruby defined macro definitions. */
+#if !defined(NUM2SIZET) && !defined(NUM2SSIZET)
+# if defined(HAVE_LONG_LONG) && SIZEOF_SIZE_T > SIZEOF_LONG
+#  define NUM2SIZET(x) ((size_t)NUM2ULL(x))
+#  define NUM2SSIZET(x) ((ssize_t)NUM2LL(x))
+# else
+#  define NUM2SIZET(x) NUM2ULONG(x)
+#  define NUM2SSIZET(x) NUM2LONG(x)
+# endif
 #endif
 
-#if SIZEOF_SIZE_T > SIZEOF_LONG && defined(HAVE_LONG_LONG)
-# define SIZET2NUM(v) ULL2NUM(v)
-# define SSIZET2NUM(v) LL2NUM(v)
-#elif SIZEOF_SIZE_T == SIZEOF_LONG
-# define SIZET2NUM(v) ULONG2NUM(v)
-# define SSIZET2NUM(v) LONG2NUM(v)
-#else
-# define SIZET2NUM(v) UINT2NUM(v)
-# define SSIZET2NUM(v) INT2NUM(v)
+/* Use Ruby defined macro definitions. */
+#if !defined(SIZET2NUM) && !defined(SSIZET2NUM)
+# if SIZEOF_SIZE_T > SIZEOF_LONG && defined(HAVE_LONG_LONG)
+#  define SIZET2NUM(v) ULL2NUM(v)
+#  define SSIZET2NUM(v) LL2NUM(v)
+# elif SIZEOF_SIZE_T == SIZEOF_LONG
+#  define SIZET2NUM(v) ULONG2NUM(v)
+#  define SSIZET2NUM(v) LONG2NUM(v)
+# else
+#  define SIZET2NUM(v) UINT2NUM(v)
+#  define SSIZET2NUM(v) INT2NUM(v)
+# endif
 #endif
 
 
