@@ -43,7 +43,7 @@
 
 
 #define MAX_BUF 1024
-#define WINDOWS_API_VERSION "1.9.1"
+#define WINDOWS_API_VERSION "1.9.2"
 
 #define _T_VOID     0
 #define _T_LONG     1

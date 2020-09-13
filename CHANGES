@@ -1,3 +1,6 @@
+== 1.9.2 - 13-Sep-2020
+* Handle Ruby 3.0 snapshot (formerly known as Ruby 2.8).
+
 == 1.9.1 - 14-Jul-2020
 * Handle whether tainted support or not.
 
