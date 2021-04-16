@@ -43,6 +43,12 @@ class TC_Win32_API < Test::Unit::TestCase
       assert_equal(0xFFFFFFFF, @gfa.call('C:/foobarbazblah'))
    end
 
+   def test_last_error
+      @gfa.call('C:/foobarbazblah')
+      error_file_not_found = 2
+      assert_equal(error_file_not_found, API.last_error)
+   end
+
    def test_dll_name
       assert_respond_to(@gcd, :dll_name)
       assert_equal('kernel32', @gcd.dll_name)
