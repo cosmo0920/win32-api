@@ -59,7 +59,7 @@ namespace 'gem' do
   end
 
   desc 'Build a binary gem'
-  task :binary, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64, :ruby23_32, :ruby23_64, :ruby24_32, :ruby24_64, :ruby25_32, :ruby25_64, :ruby_26_32, :ruby26_64, :ruby27_32, :ruby27_64, :ruby30_32, :ruby30_64 do |task, args|
+  task :binary, :ruby2_32, :ruby2_64, :ruby21, :ruby21_64, :ruby22, :ruby22_64, :ruby23_32, :ruby23_64, :ruby24_32, :ruby24_64, :ruby25_32, :ruby25_64, :ruby_26_32, :ruby26_64, :ruby27_32, :ruby27_64, :ruby30_32, :ruby30_64, :ruby31_32, :ruby31_64 do |task, args|
     # These are just what's on my system at the moment. Adjust as needed.
     # ri refers to RubyInstaller, ruby 2.3 and prev were built with RubyInstaller (:ri),
     # 2.4 and later with RubyInstaller2 (:ri2)
@@ -100,6 +100,8 @@ namespace 'gem' do
         :ruby27_64 => {:path => "#{pre}/ruby27-x64/bin",  :ri => :ri2_64, :omit => true},
         :ruby30_32 => {:path => "#{pre}/ruby30/bin",      :ri => :ri2,    :omit => true},
         :ruby30_64 => {:path => "#{pre}/ruby30-x64/bin",  :ri => :ri2_64, :omit => true},
+        :ruby31_32 => {:path => "#{pre}/ruby31/bin",      :ri => :ri2,    :omit => true},
+        :ruby31_64 => {:path => "#{pre}/ruby31-x64/bin",  :ri => :ri2_64, :omit => true},
       }
     )
 
