@@ -2,15 +2,15 @@ FROM cosmo0920/win32-api:latest
 LABEL maintainer "Hiroshi Hatake <cosmo0920.wp@gmail.com>"
 LABEL Description="win32-api building docker image"
 
-# Ruby 3.0
+# Ruby 3.1
 RUN powershell \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
-	Invoke-WebRequest -OutFile C:\rubyinstaller-head-x86-20200911.exe https://ci.appveyor.com/api/buildjobs/trvw8cisuqismasc/artifacts/packages%2Fri%2Frecipes%2Finstaller-inno%2Frubyinstaller-head-x86.exe
-RUN cmd /c "C:\rubyinstaller-head-x86-20200911.exe" /silent /dir=c:\ruby30
+	Invoke-WebRequest -OutFile C:\rubyinstaller-head-x86-20210418.exe https://ci.appveyor.com/api/buildjobs/smfh4ojkobb4duif/artifacts/packages%2Fri%2Frecipes%2Finstaller-inno%2Frubyinstaller-head-x86.exe
+RUN cmd /c "C:\rubyinstaller-head-x86-20210418.exe" /silent /dir=c:\ruby31
 RUN powershell \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
-	Invoke-WebRequest -OutFile C:\rubyinstaller-head-x64-20200911.exe https://ci.appveyor.com/api/buildjobs/ufndgf49pysdvpt9/artifacts/packages%2Fri%2Frecipes%2Finstaller-inno%2Frubyinstaller-head-x64.exe
-RUN cmd /c "C:\rubyinstaller-head-x64-20200911.exe" /silent /dir=c:\ruby30-x64
+	Invoke-WebRequest -OutFile C:\rubyinstaller-head-x64-20210418.exe https://ci.appveyor.com/api/buildjobs/hsgdg4xl5ny74k94/artifacts/packages%2Fri%2Frecipes%2Finstaller-inno%2Frubyinstaller-head-x64.exe
+RUN cmd /c "C:\rubyinstaller-head-x64-20210418.exe" /silent /dir=c:\ruby31-x64
 
 RUN mkdir C:\pkg
 COPY build-gem.bat C:\\build-gem.bat
