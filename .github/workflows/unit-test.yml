@@ -1,0 +1,35 @@
+name: Unit Test
+on:
+  - push
+  - pull_request
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: [ '2.5', '2.6', '2.7', '3.0' ]
+        os:
+          - windows-latest
+        experimental: [false]
+        include:
+          - ruby: 'head'
+            os: windows-latest
+            experimental: true
+    name: Unit testing with Ruby ${{ matrix.ruby }} on ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+    - name: Install
+      run: |
+        ruby --version
+        gem --version
+        gem install bundler rake
+        ridk exec bundle install --jobs 4 --retry 3
+    - name: Unit Test
+      run: |
+        ridk exec bundle exec rake gem:binary
+        bundle exec rake test:all
