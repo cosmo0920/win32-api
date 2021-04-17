@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/windows/servercore:1903
+FROM mcr.microsoft.com/windows/servercore:20H2
 LABEL maintainer "Hiroshi Hatake <cosmo0920.wp@gmail.com>"
 LABEL Description="win32-api building docker image"
 
