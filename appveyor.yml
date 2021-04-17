@@ -1,5 +1,7 @@
 version: '{build}'
 
+image: Visual Studio 2019
+
 init:
   # use a minimal path
   - set PATH=C:\ruby%ruby_version%\bin;C:\Program Files\7-Zip;C:\Program Files\AppVeyor\BuildAgent;C:\Program Files\Git\cmd;C:\Windows\system32
