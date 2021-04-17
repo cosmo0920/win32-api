@@ -102,6 +102,8 @@ RUN cmd /c C:\DevKit-mingw64-64-4.7.2-20130224-1432-sfx.exe -o"c:\DevKit64" -y
 
 RUN choco install -y git \
     && choco install -y msys2 --params "'/NoPath /NoUpdate /InstallDir:C:\msys64'"
+# pacman -Syu --noconfirm is needed for downloading ucrt64 repo.
+# They should be removed after using Ruby 2.5.9, 2.6.7, and 2.7.3 installers.
 RUN refreshenv \
     && C:\ruby27\bin\ridk exec pacman -Syu --noconfirm \
     && C:\ruby27\bin\ridk install 2 3 \
