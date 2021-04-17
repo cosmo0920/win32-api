@@ -62,6 +62,35 @@ typedef struct {
     int prototype[20];
 } Win32API;
 
+typedef struct ThreadData {
+   DWORD win32api_error;
+} ThreadData;
+
+static inline ThreadData* thread_data_get(void);
+static ID id_thread_data;
+
+static ThreadData* thread_data_init(void)
+{
+   ThreadData* td;
+   VALUE obj;
+
+   obj = Data_Make_Struct(rb_cObject, ThreadData, NULL, -1, td);
+   rb_thread_local_aset(rb_thread_current(), id_thread_data, obj);
+
+   return td;
+}
+
+static inline ThreadData* thread_data_get()
+{
+   VALUE obj = rb_thread_local_aref(rb_thread_current(), id_thread_data);
+
+   if(obj != Qnil && TYPE(obj) == T_DATA){
+      return (ThreadData*) DATA_PTR(obj);
+   }
+
+   return thread_data_init();
+}
+
 static void api_free(Win32API* ptr){
    if(ptr->library)
       FreeLibrary(ptr->library);
@@ -781,6 +810,7 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
    uintptr_t return_value;
    int i = 0;
    int len;
+   ThreadData* thread_data = thread_data_get();
 
    struct{
       uintptr_t params[20];
@@ -975,6 +1005,8 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
         }
    }
 
+   thread_data->win32api_error = GetLastError();
+
    /* Return the appropriate type based on the return type specified
     * in the constructor.
     */
@@ -1030,6 +1062,21 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
 }
 
 /*
+ * call-seq:
+ *    Win32::API.last_error
+ *
+ * Return the last Win32 error code of the current executing thread.
+ *
+ * The error code shouldn't be retrieved by calling GetLastError() manually
+ * because Ruby's internal code may call other Win32 API and reset the error
+ * code before it.
+ */
+static VALUE get_last_error(VALUE self)
+{
+   return INT2NUM(thread_data_get()->win32api_error);
+}
+
+/*
  * Wraps the Windows API functions in a Ruby interface.
  */
 void Init_api(){
@@ -1060,6 +1107,9 @@ void Init_api(){
 
    /* Miscellaneous */
    rb_define_alloc_func(cAPI, api_allocate);
+
+   /* GetLastError alternative */
+   rb_define_singleton_method(cAPI, "last_error", get_last_error, 0);
 
    /* Win32::API Instance Methods */
    rb_define_method(cAPI, "initialize", api_init, -1);

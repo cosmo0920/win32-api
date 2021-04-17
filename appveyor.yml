@@ -1,5 +1,7 @@
 version: '{build}'
 
+image: Visual Studio 2019
+
 init:
   # use a minimal path
   - set PATH=C:\ruby%ruby_version%\bin;C:\Program Files\7-Zip;C:\Program Files\AppVeyor\BuildAgent;C:\Program Files\Git\cmd;C:\Windows\system32
@@ -26,6 +28,10 @@ test_script:
 environment:
   matrix:
     - ruby_version: _trunk
+    - ruby_version: 30-x64
+    - ruby_version: 30
+    - ruby_version: 27-x64
+    - ruby_version: 27
     - ruby_version: 26-x64
     - ruby_version: 26
     - ruby_version: 25-x64
@@ -34,12 +40,6 @@ environment:
     - ruby_version: 24
     - ruby_version: 23-x64
     - ruby_version: 23
-    - ruby_version: 22-x64
-    - ruby_version: 22
-    - ruby_version: 21-x64
-    - ruby_version: 21
-    - ruby_version: 200-x64
-    - ruby_version: 200
 
 matrix:
   allow_failures:
