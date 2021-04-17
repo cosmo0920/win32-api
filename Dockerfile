@@ -80,6 +80,16 @@ RUN powershell \
 	Invoke-WebRequest -OutFile C:\rubyinstaller-2.7.0-1-x64.exe https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.7.0-1/rubyinstaller-2.7.0-1-x64.exe
 RUN cmd /c "C:\rubyinstaller-2.7.0-1-x64.exe" /silent /dir=c:\ruby27-x64
 
+# Ruby 3.0
+RUN powershell \
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+	Invoke-WebRequest -OutFile C:\rubyinstaller-3.0.0-1-x86.exe https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.0.0-1/rubyinstaller-3.0.0-1-x86.exe
+RUN cmd /c "C:\rubyinstaller-3.0.0-1-x86.exe" /silent /dir=c:\ruby30
+RUN powershell \
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+	Invoke-WebRequest -OutFile C:\rubyinstaller-3.0.0-1-x64.exe https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.0.0-1/rubyinstaller-3.0.0-1-x64.exe
+RUN cmd /c "C:\rubyinstaller-3.0.0-1-x64.exe" /silent /dir=c:\ruby30-x64
+
 # DevKit
 RUN powershell \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
