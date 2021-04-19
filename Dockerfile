@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/windows/servercore:1903
+FROM mcr.microsoft.com/windows/servercore:20H2
 LABEL maintainer "Hiroshi Hatake <cosmo0920.wp@gmail.com>"
 LABEL Description="win32-api building docker image"
 
@@ -80,6 +80,16 @@ RUN powershell \
 	Invoke-WebRequest -OutFile C:\rubyinstaller-2.7.0-1-x64.exe https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.7.0-1/rubyinstaller-2.7.0-1-x64.exe
 RUN cmd /c "C:\rubyinstaller-2.7.0-1-x64.exe" /silent /dir=c:\ruby27-x64
 
+# Ruby 3.0
+RUN powershell \
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+	Invoke-WebRequest -OutFile C:\rubyinstaller-3.0.0-1-x86.exe https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.0.0-1/rubyinstaller-3.0.0-1-x86.exe
+RUN cmd /c "C:\rubyinstaller-3.0.0-1-x86.exe" /silent /dir=c:\ruby30
+RUN powershell \
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+	Invoke-WebRequest -OutFile C:\rubyinstaller-3.0.0-1-x64.exe https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.0.0-1/rubyinstaller-3.0.0-1-x64.exe
+RUN cmd /c "C:\rubyinstaller-3.0.0-1-x64.exe" /silent /dir=c:\ruby30-x64
+
 # DevKit
 RUN powershell \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
@@ -92,8 +102,12 @@ RUN cmd /c C:\DevKit-mingw64-64-4.7.2-20130224-1432-sfx.exe -o"c:\DevKit64" -y
 
 RUN choco install -y git \
     && choco install -y msys2 --params "'/NoPath /NoUpdate /InstallDir:C:\msys64'"
+# pacman -Syu --noconfirm is needed for downloading ucrt64 repo.
+# They should be removed after using Ruby 2.5.9, 2.6.7, and 2.7.3 installers.
 RUN refreshenv \
+    && C:\ruby27\bin\ridk exec pacman -Syu --noconfirm \
     && C:\ruby27\bin\ridk install 2 3 \
+    && C:\ruby27-x64\bin\ridk exec pacman -Syu --noconfirm \
     && C:\ruby27-x64\bin\ridk install 2 3
 
 ENTRYPOINT ["cmd"]
