@@ -1,3 +1,7 @@
+== 1.10.0 - 19-Apr-2021
+* Add Ruby 3.1 snapshot support
+* Add API.last_error
+
 == 1.9.2 - 13-Sep-2020
 * Handle Ruby 3.0 snapshot (formerly known as Ruby 2.8).
 
