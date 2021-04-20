@@ -1074,7 +1074,7 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
  */
 static VALUE get_last_error(VALUE self)
 {
-   return INT2NUM(thread_data_get()->win32api_error);
+   return ULONG2NUM(thread_data_get()->win32api_error);
 }
 
 /*
