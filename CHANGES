@@ -1,3 +1,6 @@
+== 1.10.1 - 23-Apr-2021
+* Use ULONG2NUM() for API.last_error to avoid truncate
+
 == 1.10.0 - 19-Apr-2021
 * Add Ruby 3.1 snapshot support
 * Add API.last_error
