@@ -75,6 +75,7 @@ static ThreadData* thread_data_init(void)
    VALUE obj;
 
    obj = Data_Make_Struct(rb_cObject, ThreadData, NULL, -1, td);
+   td->win32api_error = 0;
    rb_thread_local_aset(rb_thread_current(), id_thread_data, obj);
 
    return td;
@@ -1073,7 +1074,7 @@ static VALUE api_call(int argc, VALUE* argv, VALUE self){
  */
 static VALUE get_last_error(VALUE self)
 {
-   return INT2NUM(thread_data_get()->win32api_error);
+   return ULONG2NUM(thread_data_get()->win32api_error);
 }
 
 /*
