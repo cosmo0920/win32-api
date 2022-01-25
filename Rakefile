@@ -102,6 +102,8 @@ namespace 'gem' do
         :ruby30_64 => {:path => "#{pre}/ruby30-x64/bin",  :ri => :ri2_64, :omit => true},
         :ruby31_32 => {:path => "#{pre}/ruby31/bin",      :ri => :ri2,    :omit => true},
         :ruby31_64 => {:path => "#{pre}/ruby31-x64/bin",  :ri => :ri2_64, :omit => true},
+        :ruby32_32 => {:path => "#{pre}/ruby32/bin",      :ri => :ri2,    :omit => true},
+        :ruby32_64 => {:path => "#{pre}/ruby32-x64/bin",  :ri => :ri2_64, :omit => true},
       }
     )
 
@@ -207,6 +209,21 @@ begin
       end
     end
 
+    if RbConfig::CONFIG['MINOR'] == '1'
+      if RbConfig::CONFIG['arch'] =~ /x64/i
+        require File.join(File.dirname(__FILE__), 'ruby31_64/win32/api')
+      else
+        require File.join(File.dirname(__FILE__), 'ruby31_32/win32/api')
+      end
+    end
+
+    if RbConfig::CONFIG['MINOR'] == '2'
+      if RbConfig::CONFIG['arch'] =~ /x64/i
+        require File.join(File.dirname(__FILE__), 'ruby32_64/win32/api')
+      else
+        require File.join(File.dirname(__FILE__), 'ruby32_32/win32/api')
+      end
+    end
   end
 rescue LoadError
   require File.join(File.dirname(__FILE__), '../../ext/api')
