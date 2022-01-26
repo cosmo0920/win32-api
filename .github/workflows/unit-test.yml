@@ -31,5 +31,4 @@ jobs:
         ridk exec bundle install --jobs 4 --retry 3
     - name: Unit Test
       run: |
-        ridk exec bundle exec rake gem:binary
-        bundle exec rake test:all
+        ridk exec bundle exec rake
