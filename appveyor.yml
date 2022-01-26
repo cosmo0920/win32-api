@@ -23,8 +23,7 @@ install:
 build: off
 
 test_script:
-  - rake gem:binary
-  - rake -rdevkit test:all
+  - rake -rdevkit
 
 environment:
   matrix:
