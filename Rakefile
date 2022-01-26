@@ -1,7 +1,6 @@
 require 'bundler/gem_tasks'
 require 'rake/clean'
 require 'rake/testtask'
-require 'rake_compiler_dock'
 require 'rbconfig'
 
 CLEAN.include(

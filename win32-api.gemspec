@@ -18,7 +18,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency('test-unit', '>= 2.5.0')
   spec.add_development_dependency('rake')
   spec.add_development_dependency("rake-compiler", ">= 1.1.9")
-  spec.add_development_dependency("rake-compiler-dock", "~> 1.2")
 
   spec.description = <<-EOF
     The Win32::API library is meant as a replacement for the Win32API
