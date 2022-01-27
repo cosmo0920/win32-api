@@ -36,13 +36,6 @@ Rake::ExtensionTask.new('win32/api', spec) do |ext|
   configure_cross_compilation(ext)
 end
 
-task 'gem:native' do
-  sh "bundle package --all"   # Avoid repeated downloads of gems by using gem files from the host.
-  %w[ x86-mingw32 x64-mingw-ucrt x64-mingw32 ].each do |plat|
-    RakeCompilerDock.sh "bundle --local && rake native:#{plat} gem", platform: plat
-  end
-end
-
 namespace 'test' do
   Rake::TestTask.new(:all) do |test|
     test.libs << 'test'
