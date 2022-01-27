@@ -15,7 +15,8 @@ CLEAN.include(
   '**/*.pdb',
   '**/*.obj',
   '**/*.stackdump',         # Junk that can happen on Windows
-  "**/*.#{RbConfig::CONFIG['DLEXT']}" # C shared object
+  "**/*.#{RbConfig::CONFIG['DLEXT']}", # C shared object
+  "**/tmp/"
 )
 
 require 'rake/extensiontask'
