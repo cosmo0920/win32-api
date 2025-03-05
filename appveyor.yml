@@ -14,7 +14,7 @@ init:
 platform: x64
 
 install:
-  - set SSL_CERT_FILE=C:/ruby24-x64/ssl/cert.pem
+  - set SSL_CERT_FILE=C:/ruby31-x64/ssl/cert.pem
   - ruby --version
   - gem --version
   # Assume we can use the version of bundler that Appveyor has packaged with each ruby version
@@ -29,23 +29,7 @@ environment:
   matrix:
     - ruby_version: _trunk
     - ruby_version: 30-x64
-    - ruby_version: 30
-    - ruby_version: 27-x64
-    - ruby_version: 27
-    - ruby_version: 26-x64
-    - ruby_version: 26
-    - ruby_version: 25-x64
-    - ruby_version: 25
-    - ruby_version: 24-x64
-    - ruby_version: 24
-    - ruby_version: 23-x64
-    - ruby_version: 23
-    - ruby_version: 22-x64
-    - ruby_version: 22
-    - ruby_version: 21-x64
-    - ruby_version: 21
-    - ruby_version: 200-x64
-    - ruby_version: 200
+    - ruby_version: 31-x64
 
 matrix:
   allow_failures:

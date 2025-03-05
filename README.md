@@ -1,6 +1,6 @@
 # Description
   This is a drop-in replacement for the Win32API library currently part of
-  Ruby's standard library.
+  Ruby's standard library. This fork is taken by Chef Infra to update it to Ruby 3.1 support
 
 # Synopsis
 

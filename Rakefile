@@ -21,12 +21,12 @@ CLEAN.include(
 
 require 'rake/extensiontask'
 
-spec = eval(File.read("win32-api.gemspec"))
+spec = eval(File.read("chef-win32-api.gemspec"))
 
 def configure_cross_compilation(ext)
   unless RUBY_PLATFORM =~ /mswin|mingw/
     ext.cross_compile = true
-    ext.cross_platform = ['x86-mingw32', 'x64-mingw32', 'x64-mingw-ucrt']
+    ext.cross_platform = ['x64-mingw32', 'x64-mingw-ucrt']
   end
 end
 
